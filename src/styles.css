@@ -2,3 +2,18 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.full-width {
+  width: 100%;
+}
+.form-container {
+  padding: 32px;
+}
+.card {
+  min-width: 350px;
+  margin: 20px auto;
+}
+
+.card-content {
+  margin-top: 10px;
+}
