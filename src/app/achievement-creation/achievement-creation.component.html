@@ -11,8 +11,14 @@
       <div class="full-width file-button-container">
         <label class="file-button-label">Icon</label>
         <button mat-raised-button color="primary" type="button" class="file-button" (click)="fileInput.click()">Choose File</button>
-        <input hidden (change)="onFileSelected()" #fileInput type="file" id="file">
+        <input hidden (change)="onFileSelected($event)" #fileInput type="file" id="file" accept="image/*">
         <span class="file-name">{{selectedFile?.name}}</span>
+        <button *ngIf="selectedFile" mat-mini-fab color="primary" aria-label="Delete image" (click)="deleteFile()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      <div *ngIf="imageUrl" class="full-width">
+        <img [src]="imageUrl" alt="Preview" class="preview-image">
       </div>
       <mat-form-field class="full-width">
         <mat-label>Category</mat-label>
