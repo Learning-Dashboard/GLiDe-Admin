@@ -6,7 +6,8 @@ import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {NgIf, NgOptimizedImage} from '@angular/common';
+import {NgIf} from '@angular/common';
+import {GamificationEngineService} from '../services/gamification-engine.service';
 
 @Component({
   selector: 'app-achievement-creation',
@@ -18,6 +19,9 @@ import {NgIf, NgOptimizedImage} from '@angular/common';
 export class AchievementCreationComponent {
   protected imageUrl: any;
   protected selectedFile: any;
+
+  constructor(private service: GamificationEngineService) {}
+
   form: FormGroup = new FormGroup({
     name: new FormControl(),
     category: new FormControl(),
@@ -44,8 +48,10 @@ export class AchievementCreationComponent {
   }
 
   protected onSubmit(){
-    console.log(this.selectedFile?.name)
-    console.log(this.form.get('name')?.value)
-    console.log(this.form.get('category')?.value)
+    this.service.postAchievement(this.form.get('name')?.value, this.selectedFile, this.form.get('category')?.value).subscribe((result) => {
+      console.log(result.status);
+    });
+    this.form.reset();
+    this.deleteFile();
   }
 }
