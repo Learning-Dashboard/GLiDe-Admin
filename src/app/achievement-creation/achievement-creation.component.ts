@@ -42,16 +42,17 @@ export class AchievementCreationComponent {
     }
   }
 
-  protected deleteFile(){
+  protected deleteFile(inputElement: HTMLInputElement){
     this.imageUrl = null;
     this.selectedFile = null;
+    inputElement.value='';
   }
 
-  protected onSubmit(){
+  protected onSubmit(inputElement?: HTMLInputElement){
     this.service.postAchievement(this.form.get('name')?.value, this.selectedFile, this.form.get('category')?.value).subscribe((result) => {
       console.log(result.status);
     });
     this.form.reset();
-    this.deleteFile();
+    if(inputElement) this.deleteFile(inputElement);
   }
 }

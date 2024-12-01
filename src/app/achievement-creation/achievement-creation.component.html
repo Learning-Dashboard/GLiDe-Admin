@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+<form [formGroup]="form" (ngSubmit)="onSubmit(fileInput)" class="form-container">
   <mat-card class="card">
     <mat-card-header>
       <mat-card-title>Achievement Creation</mat-card-title>
@@ -13,7 +13,7 @@
         <button mat-raised-button color="primary" type="button" class="file-button" (click)="fileInput.click()">Choose File</button>
         <input hidden (change)="onFileSelected($event)" #fileInput type="file" id="file" accept="image/*">
         <span class="file-name">{{selectedFile?.name}}</span>
-        <button *ngIf="selectedFile" mat-mini-fab color="primary" aria-label="Delete image" (click)="deleteFile()">
+        <button *ngIf="selectedFile" mat-mini-fab color="primary" aria-label="Delete image" type="button" (click)="deleteFile(fileInput)">
           <mat-icon>delete</mat-icon>
         </button>
       </div>
