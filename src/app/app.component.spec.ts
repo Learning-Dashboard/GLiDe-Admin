@@ -17,13 +17,13 @@ describe('AppComponent', () => {
   it(`should have the 'GLiDe-Admin' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('GLiDe-Admin');
+    expect(app.title).toEqual('GLiDe Admin Tool');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, GLiDe-Admin');
+    expect(compiled.querySelector('span')?.textContent).toContain('GLiDE Admin Tool');
   });
 });
