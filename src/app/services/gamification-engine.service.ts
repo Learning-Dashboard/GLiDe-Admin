@@ -16,4 +16,16 @@ export class GamificationEngineService {
     formData.append('category', category);
     return this.http.post(this.gamificationUrl + '/achievements', formData, {observe: 'response'});
   }
+
+  getAchievements(){
+    return this.http.get(this.gamificationUrl + '/achievements');
+  }
+
+  getEvaluableActions(){
+    return this.http.get(this.gamificationUrl + '/evaluableActions');
+  }
+
+  getGames(){
+    return this.http.get(this.gamificationUrl + '/games');
+  }
 }

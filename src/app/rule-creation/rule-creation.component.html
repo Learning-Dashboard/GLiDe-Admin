@@ -1,0 +1,91 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title>Rule Creation</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="card-content">
+      <mat-label>Game</mat-label>
+      <mat-radio-group formControlName="game" class="full-width">
+        <div *ngFor="let game of games">
+          <mat-radio-button color="primary" value=game>
+            {{game.subjectAcronym}}
+            {{game.course}}
+            {{game.period}}
+          </mat-radio-button>
+        </div>
+      </mat-radio-group>
+      <div *ngIf="!games" style="color: red">No games available</div>
+      <mat-form-field class="full-width">
+        <mat-label>Evaluable action</mat-label>
+        <mat-select formControlName="evaluableAction">
+          <div *ngFor="let evaluableAction of evaluableActions">
+            <mat-option value=evaluableAction.id>
+              {{evaluableAction.id}}
+              {{evaluableAction.description}}
+              {{evaluableAction.assessmentLevel}}
+            </mat-option>
+          </div>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Achievement</mat-label>
+        <mat-select formControlName="achievement">
+          <div *ngFor="let achievement of achievements">
+            <mat-option value=achievement.id>
+              {{achievement.name}}
+              {{achievement.category}}
+            </mat-option>
+          </div>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name">
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Repetitions</mat-label>
+        <input matInput formControlName="repetitions" type="number" placeholder="1">
+      </mat-form-field>
+      <mat-label>Rule Type</mat-label>
+      <mat-radio-group formControlName="ruleType" class="full-width">
+        <mat-radio-button color="primary" value="simple">
+          Simple
+        </mat-radio-button>
+        <mat-radio-button color="primary" value="date">
+          Date
+        </mat-radio-button>
+      </mat-radio-group>
+      <div *ngIf="form.get('ruleType')?.value === 'date'" class="full-width">
+        <mat-form-field>
+          <mat-label>Period</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="Start date" formControlName="startDate">
+            <input matEndDate placeholder="End date" formControlName="endDate">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+      <mat-form-field class="full-width">
+        <mat-label>Achievement Assignment Message</mat-label>
+        <textarea matInput formControlName="achievementAssignmentMessage"></textarea>
+      </mat-form-field>
+      <mat-checkbox formControlName="allowRepetitions" color="primary">Allow Repetitions</mat-checkbox>
+    </mat-card-content>
+    <mat-form-field class="full-width">
+      <mat-label>Achievement Assignment Units</mat-label>
+      <input matInput formControlName="achievementAssignmentUnits" type="number">
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Evaluable action</mat-label>
+      <mat-select formControlName="achievementAssignmentCondition">
+        <div *ngFor="let condition of conditions">
+          <mat-option value=condition[0]>
+            {{condition[1]}}
+          </mat-option>
+        </div>
+      </mat-select>
+    </mat-form-field>
+  </mat-card>
+</form>
