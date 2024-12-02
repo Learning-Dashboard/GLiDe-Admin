@@ -1,0 +1,28 @@
+.label {
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.label-title{
+  font-size: 18px;
+  margin-left: 20px;
+}
+
+.group-selector{
+  margin-bottom: 20px;
+}
+
+.condition-selector{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.add-button{
+  margin-top: 10px;
+}
+
+.delete-button{
+  margin-left: 10px;
+}
