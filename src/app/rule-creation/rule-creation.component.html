@@ -7,7 +7,7 @@
       <mat-label>Game</mat-label>
       <mat-radio-group formControlName="game" class="full-width">
         <div *ngFor="let game of games">
-          <mat-radio-button color="primary" value=game>
+          <mat-radio-button color="primary" [value]=game>
             {{game.subjectAcronym}}
             {{game.course}}
             {{game.period}}
@@ -19,7 +19,7 @@
         <mat-label>Evaluable action</mat-label>
         <mat-select formControlName="evaluableAction">
           <div *ngFor="let evaluableAction of evaluableActions">
-            <mat-option value=evaluableAction.id>
+            <mat-option [value]=evaluableAction.id>
               {{evaluableAction.id}}
               {{evaluableAction.description}}
               {{evaluableAction.assessmentLevel}}
@@ -31,7 +31,7 @@
         <mat-label>Achievement</mat-label>
         <mat-select formControlName="achievement">
           <div *ngFor="let achievement of achievements">
-            <mat-option value=achievement.id>
+            <mat-option [value]=achievement.id>
               {{achievement.name}}
               {{achievement.category}}
             </mat-option>
@@ -71,21 +71,36 @@
         <mat-label>Achievement Assignment Message</mat-label>
         <textarea matInput formControlName="achievementAssignmentMessage"></textarea>
       </mat-form-field>
-      <mat-checkbox formControlName="allowRepetitions" color="primary">Allow Repetitions</mat-checkbox>
-    </mat-card-content>
-    <mat-form-field class="full-width">
-      <mat-label>Achievement Assignment Units</mat-label>
-      <input matInput formControlName="achievementAssignmentUnits" type="number">
-    </mat-form-field>
-    <mat-form-field class="full-width">
-      <mat-label>Evaluable action</mat-label>
-      <mat-select formControlName="achievementAssignmentCondition">
-        <div *ngFor="let condition of conditions">
-          <mat-option value=condition[0]>
-            {{condition[1]}}
-          </mat-option>
+      <mat-checkbox formControlName="onlyFirstTime" color="primary">Allow assignment only the first time</mat-checkbox>
+      <mat-form-field class="full-width">
+        <mat-label>Achievement Assignment Units</mat-label>
+        <input matInput formControlName="achievementAssignmentUnits" type="number">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Condition</mat-label>
+        <mat-select formControlName="achievementAssignmentCondition">
+          <div *ngFor="let condition of conditions">
+            <mat-option [value]=condition[0]>
+              {{condition[1]}}
+            </mat-option>
+          </div>
+        </mat-select>
+      </mat-form-field>
+      <div formArrayName="achievementAssignmentParameters">
+        <div *ngFor="let parameter of achievementAssignmentParameters.controls; let i = index">
+          <mat-form-field>
+            <mat-label>Parameter</mat-label>
+            <input matInput [formControlName]="i">
+          </mat-form-field>
+          <button mat-mini-fab color="primary" aria-label="Delete image" type="button" (click)="removeAchievementAssignmentParameter(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
-      </mat-select>
-    </mat-form-field>
+      </div>
+      <button mat-mini-fab color="primary" aria-label="Add parameter" type="button" (click)="addAchievementAssignmentParameter()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </mat-card-content>
   </mat-card>
+  <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Submit</button>
 </form>
