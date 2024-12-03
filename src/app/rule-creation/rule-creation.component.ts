@@ -108,10 +108,12 @@ export class RuleCreationComponent {
 
     let game = this.form.get('game')?.value;
     let evaluableAction = this.form.get('evaluableAction')?.value;
+    let repetitions = Math.round(this.form.get('repetitions')?.value);
+    let points = Math.round(this.form.get('achievementAssignmentUnits')?.value);
     if (this.form.get('ruleType')?.value === 'simple'){
       this.service.postSimpleRule(
         this.form.get('name')?.value,
-        this.form.get('repetitions')?.value,
+        repetitions,
         game.subjectAcronym,
         game.course,
         game.period,
@@ -121,7 +123,7 @@ export class RuleCreationComponent {
         this.form.get('onlyFirstTime')?.value,
         this.form.get('achievementAssignmentCondition')?.value,
         this.form.get('achievementAssignmentParameters')?.value,
-        this.form.get('achievementAssignmentUnits')?.value,
+        points,
         evaluableAction.assessmentLevel
       ).subscribe((result) => {
         console.log(result.status);
@@ -141,7 +143,7 @@ export class RuleCreationComponent {
       endDate = endDate.toJSON().substring(0,10);
       this.service.postDateRule(
         this.form.get('name')?.value,
-        this.form.get('repetitions')?.value,
+        repetitions,
         game.subjectAcronym,
         game.course,
         game.period,
@@ -151,7 +153,7 @@ export class RuleCreationComponent {
         this.form.get('onlyFirstTime')?.value,
         this.form.get('achievementAssignmentCondition')?.value,
         this.form.get('achievementAssignmentParameters')?.value,
-        this.form.get('achievementAssignmentUnits')?.value,
+        points,
         evaluableAction.assessmentLevel,
         startDate,
         endDate
