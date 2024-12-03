@@ -6,7 +6,7 @@
     <mat-card-content class="card-content">
       <mat-form-field class="full-width">
         <mat-label>Game</mat-label>
-        <mat-select formControlName="game">
+        <mat-select formControlName="game" required>
           <mat-option *ngFor="let game of games" [value]=game>
             {{game.subjectAcronym}}
             {{game.course}}/{{game.course + 1}}
@@ -14,22 +14,49 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <div class="condition-selector">
       <mat-form-field class="half-width">
         <mat-label>Evaluable action</mat-label>
-        <mat-select formControlName="evaluableAction">
-          <mat-select-trigger>
-            {{form.get('evaluableAction')?.value}}
+        <mat-select formControlName="evaluableAction" required>
+          <mat-select-trigger *ngIf="form.get('evaluableAction')?.value">
+            {{(form.get('evaluableAction')?.value).id}}
           </mat-select-trigger>
-          <mat-option *ngFor="let evaluableAction of evaluableActions" [value]=evaluableAction.id>
-            {{evaluableAction.id}}
-            {{evaluableAction.description}}
-            {{evaluableAction.assessmentLevel}}
+          <mat-option *ngFor="let evaluableAction of evaluableActions" [value]=evaluableAction>
+            <span>{{evaluableAction.id}}</span>
+            <div class="evaluable-info">
+              {{evaluableAction.description}}
+            </div>
           </mat-option>
         </mat-select>
       </mat-form-field>
+        <div class="condition-selector">
+          <mat-form-field>
+            <mat-label>Condition</mat-label>
+            <mat-select formControlName="achievementAssignmentCondition" (selectionChange)="conditionChange()" required>
+              <mat-option *ngFor="let condition of conditions" [value]=condition[0]>
+                {{condition[1]}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div formArrayName="achievementAssignmentParameters">
+            <div *ngFor="let parameter of achievementAssignmentParameters.controls; let i = index">
+              <mat-form-field>
+                <mat-label>Parameter</mat-label>
+                <input matInput [formControlName]="i" type="number" required>
+              </mat-form-field>
+              <button *ngIf="i > 0" mat-mini-fab color="primary" aria-label="Delete image" type="button" (click)="removeAchievementAssignmentParameter(i)" class="delete-button">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+          <button *ngIf="form.get('achievementAssignmentCondition')?.value === 'ValueInsideOfRange' || form.get('achievementAssignmentCondition')?.value === 'ValueOutsideOfRange'" mat-mini-fab color="primary" aria-label="Add parameter" type="button" (click)="addAchievementAssignmentParameter()" class="add-button">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
       <mat-form-field class="full-width">
         <mat-label>Achievement</mat-label>
-        <mat-select formControlName="achievement">
+        <mat-select formControlName="achievement" required>
           <mat-option *ngFor="let achievement of achievements" [value]=achievement.id>
             {{achievement.name}}
             {{achievement.category}}
@@ -38,11 +65,11 @@
       </mat-form-field>
       <mat-form-field class="full-width">
         <mat-label>Name</mat-label>
-        <input matInput formControlName="name">
+        <input matInput formControlName="name" required>
       </mat-form-field>
       <mat-form-field class="full-width">
         <mat-label>Repetitions</mat-label>
-        <input matInput formControlName="repetitions" type="number" placeholder="1">
+        <input matInput formControlName="repetitions" type="number" placeholder="1" required>
       </mat-form-field>
       <div class="group-selector full-width">
         <mat-label class="label-title">Rule Type:</mat-label>
@@ -59,10 +86,10 @@
         <mat-form-field>
           <mat-label>Period</mat-label>
           <mat-date-range-input [rangePicker]="picker">
-            <input matStartDate placeholder="Start date" formControlName="startDate">
-            <input matEndDate placeholder="End date" formControlName="endDate">
+            <input matStartDate readonly placeholder="Start date" formControlName="startDate" required>
+            <input matEndDate readonly placeholder="End date" formControlName="endDate" required>
           </mat-date-range-input>
-          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
@@ -71,37 +98,13 @@
         <mat-label>Achievement Assignment Message</mat-label>
         <textarea matInput formControlName="achievementAssignmentMessage"></textarea>
       </mat-form-field>
-      <mat-checkbox formControlName="onlyFirstTime" color="primary">Allow assignment only the first time</mat-checkbox>
+      <mat-checkbox formControlName="onlyFirstTime" color="primary" class="group-selector">
+        <span class="label">Allow assignment only the first time</span>
+      </mat-checkbox>
       <mat-form-field class="full-width">
         <mat-label>Achievement Assignment Units</mat-label>
-        <input matInput formControlName="achievementAssignmentUnits" type="number">
+        <input matInput formControlName="achievementAssignmentUnits" type="number" required>
       </mat-form-field>
-      <div class="condition-selector">
-        <mat-form-field>
-          <mat-label>Condition</mat-label>
-          <mat-select formControlName="achievementAssignmentCondition">
-            <div *ngFor="let condition of conditions">
-              <mat-option [value]=condition[0]>
-                {{condition[1]}}
-              </mat-option>
-            </div>
-          </mat-select>
-        </mat-form-field>
-        <div formArrayName="achievementAssignmentParameters">
-          <div *ngFor="let parameter of achievementAssignmentParameters.controls; let i = index">
-            <mat-form-field>
-              <mat-label>Parameter</mat-label>
-              <input matInput [formControlName]="i">
-            </mat-form-field>
-            <button *ngIf="i > 0" mat-mini-fab color="primary" aria-label="Delete image" type="button" (click)="removeAchievementAssignmentParameter(i)" class="delete-button">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </div>
-        <button mat-mini-fab color="primary" aria-label="Add parameter" type="button" (click)="addAchievementAssignmentParameter()" class="add-button">
-          <mat-icon>add</mat-icon>
-        </button>
-      </div>
     </mat-card-content>
   </mat-card>
   <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Submit</button>

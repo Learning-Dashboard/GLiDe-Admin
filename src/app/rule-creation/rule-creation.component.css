@@ -26,3 +26,8 @@
 .delete-button{
   margin-left: 10px;
 }
+
+.evaluable-info{
+  margin-left: 20px;
+  color: rgba(0, 0, 0, 0.6);
+}

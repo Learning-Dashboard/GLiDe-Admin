@@ -9,14 +9,14 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';
 import {NgForOf, NgIf} from '@angular/common';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {provideNativeDateAdapter} from '@angular/material/core';
+import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-rule-creation',
   imports: [MatFormFieldModule, MatInputModule, MatSelectModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatRadioModule, NgForOf, NgIf, MatDatepickerModule, MatCheckboxModule, MatIcon],
-  providers: [provideNativeDateAdapter()],
+  providers: [provideNativeDateAdapter(), [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}]],
   templateUrl: './rule-creation.component.html',
   standalone: true,
   styleUrl: './rule-creation.component.css'
@@ -26,11 +26,11 @@ export class RuleCreationComponent {
   protected games: any;
   protected achievements: any;
   protected conditions = [
-    ['ValueGreaterThan', '<'],
-    ['ValueLessThan', '>'],
+    ['ValueGreaterThan', '>'],
+    ['ValueLessThan', '<'],
     ['ValueEqualTo', '='],
-    ['ValueGreaterThanOrEqualTo', '<='],
-    ['ValueLessThanOrEqualTo', '>='],
+    ['ValueGreaterThanOrEqualTo', '>='],
+    ['ValueLessThanOrEqualTo', '<='],
     ['ValueOutsideOfRange', 'out of range'],
     ['ValueInsideOfRange', 'inside range']
   ];
@@ -65,6 +65,15 @@ export class RuleCreationComponent {
     this.achievementAssignmentParameters.removeAt(i);
   }
 
+  protected conditionChange(){
+    if (this.form.get('achievementAssignmentCondition')?.value !== 'ValueInsideOfRange' && this.form.get('achievementAssignmentCondition')?.value !== 'ValueOutsideOfRange') {
+      const parameters = this.form.controls['achievementAssignmentParameters'] as FormArray;
+      const firstValue = parameters.at(0);
+      parameters.clear();
+      parameters.push(firstValue);
+    }
+  }
+
   ngOnInit(){
     this.service.getEvaluableActions().subscribe((result) => {
       this.evaluableActions = result;
@@ -83,7 +92,6 @@ export class RuleCreationComponent {
   }
 
   protected onSubmit(){
-    console.log('HOLA SUBMIT');
     console.log(this.form.get('game')?.value);
     console.log(this.form.get('evaluableAction')?.value);
     console.log(this.form.get('achievement')?.value);
@@ -97,5 +105,64 @@ export class RuleCreationComponent {
     console.log(this.form.get('achievementAssignmentUnits')?.value);
     console.log(this.form.get('achievementAssignmentCondition')?.value);
     console.log(this.form.get('achievementAssignmentParameters')?.value);
+
+    let game = this.form.get('game')?.value;
+    let evaluableAction = this.form.get('evaluableAction')?.value;
+    if (this.form.get('ruleType')?.value === 'simple'){
+      this.service.postSimpleRule(
+        this.form.get('name')?.value,
+        this.form.get('repetitions')?.value,
+        game.subjectAcronym,
+        game.course,
+        game.period,
+        evaluableAction.id,
+        this.form.get('achievement')?.value,
+        this.form.get('achievementAssignmentMessage')?.value,
+        this.form.get('onlyFirstTime')?.value,
+        this.form.get('achievementAssignmentCondition')?.value,
+        this.form.get('achievementAssignmentParameters')?.value,
+        this.form.get('achievementAssignmentUnits')?.value,
+        evaluableAction.assessmentLevel
+      ).subscribe((result) => {
+        console.log(result.status);
+        if(result.status === 201) {
+          this.form.reset();
+          this.form.get('ruleType')?.setValue('simple');
+          this.conditionChange();
+        }
+      });
+    }
+    else if (this.form.get('ruleType')?.value === 'date'){
+      let startDate = this.form.get('startDate')?.value;
+      let endDate = this.form.get('endDate')?.value;
+      startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset())
+      startDate = startDate.toJSON().substring(0,10);
+      endDate.setMinutes(endDate.getMinutes() - endDate.getTimezoneOffset())
+      endDate = endDate.toJSON().substring(0,10);
+      this.service.postDateRule(
+        this.form.get('name')?.value,
+        this.form.get('repetitions')?.value,
+        game.subjectAcronym,
+        game.course,
+        game.period,
+        evaluableAction.id,
+        this.form.get('achievement')?.value,
+        this.form.get('achievementAssignmentMessage')?.value,
+        this.form.get('onlyFirstTime')?.value,
+        this.form.get('achievementAssignmentCondition')?.value,
+        this.form.get('achievementAssignmentParameters')?.value,
+        this.form.get('achievementAssignmentUnits')?.value,
+        evaluableAction.assessmentLevel,
+        startDate,
+        endDate
+      ).subscribe((result) => {
+        console.log(result.status);
+        if(result.status === 201) {
+          this.form.reset();
+          this.form.get('ruleType')?.setValue('simple');
+          this.conditionChange();
+        }
+      });
+    }
   }
 }
