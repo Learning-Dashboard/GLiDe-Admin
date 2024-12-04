@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RuleCreationComponent } from './rule-creation.component';
+import {provideHttpClient} from '@angular/common/http';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 
 describe('RuleCreationComponent', () => {
   let component: RuleCreationComponent;
@@ -8,7 +10,8 @@ describe('RuleCreationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RuleCreationComponent]
+      imports: [RuleCreationComponent],
+      providers: [provideHttpClient(), provideAnimationsAsync()]
     })
     .compileComponents();
 

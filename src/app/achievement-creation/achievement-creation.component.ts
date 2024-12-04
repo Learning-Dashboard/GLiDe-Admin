@@ -17,8 +17,8 @@ import {GamificationEngineService} from '../services/gamification-engine.service
   styleUrl: './achievement-creation.component.css'
 })
 export class AchievementCreationComponent {
-  protected imageUrl: any;
-  protected selectedFile: any;
+  imageUrl: any;
+  selectedFile: any;
 
   constructor(private service: GamificationEngineService) {}
 
@@ -27,7 +27,7 @@ export class AchievementCreationComponent {
     category: new FormControl(),
   });
 
-  protected onFileSelected(event: Event){
+  onFileSelected(event: Event){
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0){
       const file = input.files![0];
@@ -42,13 +42,13 @@ export class AchievementCreationComponent {
     }
   }
 
-  protected deleteFile(inputElement: HTMLInputElement){
+  deleteFile(inputElement: HTMLInputElement){
     this.imageUrl = null;
     this.selectedFile = null;
     inputElement.value='';
   }
 
-  protected onSubmit(inputElement?: HTMLInputElement){
+  onSubmit(inputElement?: HTMLInputElement){
     this.service.postAchievement(this.form.get('name')?.value, this.selectedFile, this.form.get('category')?.value).subscribe((result) => {
       console.log(result.status);
     });
