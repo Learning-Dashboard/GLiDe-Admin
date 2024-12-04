@@ -47,7 +47,7 @@ export class RuleCreationComponent {
     name: new FormControl,
     repetitions: new FormControl,
     achievementAssignmentMessage: new FormControl,
-    onlyFirstTime: new FormControl,
+    onlyFirstTime: new FormControl(false),
     achievementAssignmentUnits: new FormControl,
     achievementAssignmentCondition: new FormControl,
     achievementAssignmentParameters: new FormArray([new FormControl()])
@@ -72,6 +72,13 @@ export class RuleCreationComponent {
       parameters.clear();
       parameters.push(firstValue);
     }
+  }
+
+  private resetForm(){
+    this.form.reset();
+    this.form.get('ruleType')?.setValue('simple');
+    this.conditionChange();
+    this.form.get('onlyFirstTime')?.setValue(false);
   }
 
   ngOnInit(){
@@ -128,9 +135,7 @@ export class RuleCreationComponent {
       ).subscribe((result) => {
         console.log(result.status);
         if(result.status === 201) {
-          this.form.reset();
-          this.form.get('ruleType')?.setValue('simple');
-          this.conditionChange();
+          this.resetForm();
         }
       });
     }
@@ -160,9 +165,7 @@ export class RuleCreationComponent {
       ).subscribe((result) => {
         console.log(result.status);
         if(result.status === 201) {
-          this.form.reset();
-          this.form.get('ruleType')?.setValue('simple');
-          this.conditionChange();
+          this.resetForm();
         }
       });
     }

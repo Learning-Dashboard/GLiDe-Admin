@@ -16,6 +16,13 @@
   display: flex;
   flex-direction: row;
   gap: 20px;
+  align-items: flex-start;
+}
+
+.horizontal-element-container{
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
   align-items: center;
 }
 
