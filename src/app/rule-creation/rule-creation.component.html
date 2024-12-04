@@ -67,23 +67,32 @@
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" required>
       </mat-form-field>
-      <mat-form-field class="full-width">
-        <mat-label>Repetitions</mat-label>
-        <input matInput formControlName="repetitions" type="number" placeholder="1" min="1" required>
-      </mat-form-field>
-      <div class="group-selector full-width">
-        <mat-label class="label-title">Rule Type:</mat-label>
-        <mat-radio-group formControlName="ruleType">
-          <mat-radio-button color="primary" value="simple">
-            <span class="label">Simple</span>
-          </mat-radio-button>
-          <mat-radio-button color="primary" value="date">
-            <span class="label">Date</span>
-          </mat-radio-button>
-        </mat-radio-group>
+      <div class="condition-selector">
+        <div class="group-selector">
+          <mat-label class="label-title">Rule Type:</mat-label>
+          <mat-radio-group formControlName="ruleType">
+            <mat-radio-button color="primary" value="simple">
+              <span class="label">Simple</span>
+            </mat-radio-button>
+            <mat-radio-button color="primary" value="date">
+              <span class="label">Date</span>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <mat-form-field class="number-container radio-adjacent">
+          <mat-label>Repetitions to assign</mat-label>
+          <input matInput formControlName="repetitions" type="number" placeholder="1" min="1" required>
+        </mat-form-field>
+        <mat-form-field class="number-container">
+          <mat-label>Achievement Assignment Units</mat-label>
+          <input matInput formControlName="achievementAssignmentUnits" type="number" required>
+        </mat-form-field>
+        <mat-checkbox formControlName="onlyFirstTime" color="primary" class="group-selector">
+          <span class="label">Allow assignment only the first time</span>
+        </mat-checkbox>
       </div>
       <div *ngIf="form.get('ruleType')?.value === 'date'" class="full-width group-selector">
-        <mat-form-field>
+        <mat-form-field class="half-width">
           <mat-label>Period</mat-label>
           <mat-date-range-input [rangePicker]="picker">
             <input matStartDate readonly placeholder="Start date" formControlName="startDate" required>
@@ -97,13 +106,6 @@
       <mat-form-field class="full-width">
         <mat-label>Achievement Assignment Message</mat-label>
         <textarea matInput formControlName="achievementAssignmentMessage"></textarea>
-      </mat-form-field>
-      <mat-checkbox formControlName="onlyFirstTime" color="primary" class="group-selector">
-        <span class="label">Allow assignment only the first time</span>
-      </mat-checkbox>
-      <mat-form-field class="full-width">
-        <mat-label>Achievement Assignment Units</mat-label>
-        <input matInput formControlName="achievementAssignmentUnits" type="number" required>
       </mat-form-field>
     </mat-card-content>
   </mat-card>

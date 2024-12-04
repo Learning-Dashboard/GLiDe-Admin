@@ -15,8 +15,8 @@
 .condition-selector{
   display: flex;
   flex-direction: row;
-  gap: 10px;
-  align-items: flex-start;
+  gap: 20px;
+  align-items: center;
 }
 
 .add-button{
@@ -30,4 +30,12 @@
 .evaluable-info{
   margin-left: 20px;
   color: rgba(0, 0, 0, 0.6);
+}
+
+.number-container{
+  width:  20%;
+}
+
+.radio-adjacent{
+  margin-left: 40px;
 }
