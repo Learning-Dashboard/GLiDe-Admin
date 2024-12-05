@@ -44,7 +44,7 @@ export class GamificationEngineService {
     return this.http.post(this.gamificationUrl + '/rules/simples', formData, {observe: 'response'});
   }
 
-  postDateRule(name: string, repetitions: number, gameSubjectAcronym: string, gameCourse: number, gamePeriod: string, evaluableActionId: string, achievementId: number, achievementAssignmentMessage: string, achievementAssignmentOnlyFirstTime: boolean, achievementAssignmentCondition: string, achievementAssignmentConditionParameters: string[], achievementAssignmentUnits: number, achievementAssignmentAssessmentLevel: string, startDate: string, endDate: string){
+  postDateRule(name: string, repetitions: number, gameSubjectAcronym: string, gameCourse: number, gamePeriod: string, evaluableActionId: string, achievementId: number, achievementAssignmentMessage: string, achievementAssignmentOnlyFirstTime: boolean, achievementAssignmentCondition: string, achievementAssignmentConditionParameters: any[], achievementAssignmentUnits: number, achievementAssignmentAssessmentLevel: string, startDate: string, endDate: string){
     /*
     const body = {
       'name': name,

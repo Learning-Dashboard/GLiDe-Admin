@@ -22,9 +22,9 @@ import {MatIcon} from '@angular/material/icon';
   styleUrl: './rule-creation.component.css'
 })
 export class RuleCreationComponent {
-  protected evaluableActions: any;
-  protected games: any;
-  protected achievements: any;
+  evaluableActions: any;
+  games: any;
+  achievements: any;
   protected conditions = [
     ['ValueGreaterThan', '>'],
     ['ValueLessThan', '<'],
@@ -74,7 +74,7 @@ export class RuleCreationComponent {
     }
   }
 
-  private resetForm(){
+  resetForm(){
     this.form.reset();
     this.form.get('ruleType')?.setValue('simple');
     this.conditionChange();
@@ -98,7 +98,7 @@ export class RuleCreationComponent {
     });
   }
 
-  protected onSubmit(){
+  onSubmit(){
     console.log(this.form.get('game')?.value);
     console.log(this.form.get('evaluableAction')?.value);
     console.log(this.form.get('achievement')?.value);
