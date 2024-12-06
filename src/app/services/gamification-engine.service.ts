@@ -10,23 +10,6 @@ export class GamificationEngineService {
   constructor(private http: HttpClient) {}
 
   postSimpleRule(name: string, repetitions: number, gameSubjectAcronym: string, gameCourse: number, gamePeriod: string, evaluableActionId: string, achievementId: number, achievementAssignmentMessage: string, achievementAssignmentOnlyFirstTime: boolean, achievementAssignmentCondition: string, achievementAssignmentConditionParameters: any[], achievementAssignmentUnits: number, achievementAssignmentAssessmentLevel: string){
-    /*
-    const body = {
-      'name': name,
-      'repetitions': repetitions,
-      'gameSubjectAcronym': gameSubjectAcronym,
-      'gameCourse': gameCourse,
-      'gamePeriod': gamePeriod,
-      'evaluableActionId': evaluableActionId,
-      'achievementId': achievementId,
-      'achievementAssignmentMessage': achievementAssignmentMessage,
-      'achievementAssignmentOnlyFirstTime': achievementAssignmentOnlyFirstTime,
-      'achievementAssignmentCondition': achievementAssignmentCondition,
-      'achievementAssignmentConditionParameters': achievementAssignmentConditionParameters,
-      'achievementAssignmentUnits': achievementAssignmentUnits,
-      'achievementAssignmentAssessmentLevel': achievementAssignmentAssessmentLevel
-    }
-     */
     const formData = new FormData();
     formData.append('name', name);
     formData.append('repetitions', String(repetitions));
@@ -45,25 +28,6 @@ export class GamificationEngineService {
   }
 
   postDateRule(name: string, repetitions: number, gameSubjectAcronym: string, gameCourse: number, gamePeriod: string, evaluableActionId: string, achievementId: number, achievementAssignmentMessage: string, achievementAssignmentOnlyFirstTime: boolean, achievementAssignmentCondition: string, achievementAssignmentConditionParameters: any[], achievementAssignmentUnits: number, achievementAssignmentAssessmentLevel: string, startDate: string, endDate: string){
-    /*
-    const body = {
-      'name': name,
-      'repetitions': repetitions,
-      'gameSubjectAcronym': gameSubjectAcronym,
-      'gameCourse': gameCourse,
-      'gamePeriod': gamePeriod,
-      'evaluableActionId': evaluableActionId,
-      'achievementId': achievementId,
-      'achievementAssignmentMessage': achievementAssignmentMessage,
-      'achievementAssignmentOnlyFirstTime': achievementAssignmentOnlyFirstTime,
-      'achievementAssignmentCondition': achievementAssignmentCondition,
-      'achievementAssignmentConditionParameters': achievementAssignmentConditionParameters,
-      'achievementAssignmentUnits': achievementAssignmentUnits,
-      'achievementAssignmentAssessmentLevel': achievementAssignmentAssessmentLevel,
-      'startDate': startDate,
-      'endDate': endDate
-    }
-     */
     const formData = new FormData();
     formData.append('name', name);
     formData.append('repetitions', String(repetitions));
@@ -100,5 +64,21 @@ export class GamificationEngineService {
 
   getGames(){
     return this.http.get(this.gamificationUrl + '/games');
+  }
+
+  postLeaderboard(name: string, startDate: string, endDate: string, assessmentLevel: string, extent: string, anonymization: string, studentVisible: boolean, gameSubjectAcronym: string, gameCourse: number, gamePeriod: string, achievementId: number){
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('startDate', startDate);
+    formData.append('endDate', endDate);
+    formData.append('assessmentLevel', assessmentLevel);
+    formData.append('extent', extent);
+    formData.append('anonymization', anonymization);
+    formData.append('studentVisible', String(studentVisible));
+    formData.append('gameSubjectAcronym', gameSubjectAcronym);
+    formData.append('gameCourse', String(gameCourse));
+    formData.append('gamePeriod', gamePeriod);
+    formData.append('achievementId', String(achievementId));
+    return this.http.post(this.gamificationUrl + '/leaderboards', formData, {observe: 'response'});
   }
 }
