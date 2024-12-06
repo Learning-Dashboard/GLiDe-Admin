@@ -3,6 +3,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatIconModule} from '@angular/material/icon';
 import {AchievementCreationComponent} from '../achievement-creation/achievement-creation.component';
 import {RuleCreationComponent} from '../rule-creation/rule-creation.component';
+import {LeaderboardCreationComponent} from '../leaderboard-creation/leaderboard-creation.component';
 
 @Component({
   selector: 'app-tabs',
@@ -10,7 +11,8 @@ import {RuleCreationComponent} from '../rule-creation/rule-creation.component';
     MatTabsModule,
     MatIconModule,
     AchievementCreationComponent,
-    RuleCreationComponent
+    RuleCreationComponent,
+    LeaderboardCreationComponent
   ],
   templateUrl: './tabs.component.html',
   standalone: true,
