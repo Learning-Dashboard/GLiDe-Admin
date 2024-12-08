@@ -7,7 +7,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {MatInput} from '@angular/material/input';
-import {NgForOf, NgIf} from '@angular/common';
+import {formatDate, NgForOf, NgIf} from '@angular/common';
 import {
   MatDatepickerToggle,
   MatDateRangeInput,
@@ -17,12 +17,12 @@ import {
 } from '@angular/material/datepicker';
 import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
 import {MatListModule} from '@angular/material/list';
-import {resolve} from '@angular/compiler-cli';
+import {MatIcon} from '@angular/material/icon';
 
 
 @Component({
   selector: 'app-game-creation',
-  imports: [MatStepperModule, MatCardModule, MatButtonModule, MatRadioModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatInput, NgIf, NgForOf, MatDateRangeInput, MatDateRangePicker, MatDatepickerToggle, MatEndDate, MatStartDate, MatListModule],
+  imports: [MatStepperModule, MatCardModule, MatButtonModule, MatRadioModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatInput, NgIf, NgForOf, MatDateRangeInput, MatDateRangePicker, MatDatepickerToggle, MatEndDate, MatStartDate, MatListModule, MatIcon],
   providers: [provideNativeDateAdapter(), [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}]],
   templateUrl: './game-creation.component.html',
   standalone: true,
@@ -36,9 +36,13 @@ export class GameCreationComponent {
   simpleRules: any;
   dateRules: any;
   importedSimpleRules: any[] = [];
-  importedDateRules: any;
+  importedDateRules: any[] = [];
   selectedSimpleRule: any;
   selectedDateRule: any;
+  selectedDateRuleIndex: any;
+  selectedDateRuleIsImported: any;
+  importChangeDate = false;
+  importChangeSimple = false;
 
   constructor(private service: GamificationEngineService) {}
 
@@ -106,12 +110,92 @@ export class GameCreationComponent {
 
   selectSimpleRule(rule: any){
     console.log(rule);
-    this.selectedSimpleRule = rule;
+    if (!this.importChangeSimple) {
+      this.selectedSimpleRule = rule;
+    } else {
+      this.importChangeSimple = false;
+    }
   }
 
   importAllSimpleRules(){
     this.importedSimpleRules = this.importedSimpleRules.concat(this.simpleRules);
-    this.simpleRules = [];
+  }
+
+  importSimpleRule(index: number){
+    this.importedSimpleRules.push(this.simpleRules[index]);
+    this.importChangeSimple = true;
+  }
+
+  removeImportedSimpleRule(index: number){
+    this.importedSimpleRules.splice(index, 1);
+    this.importChangeSimple = true;
+  }
+
+  selectDateRule(rule: any, index: any, isImported: any){
+    console.log("HOLA1");
+    if (!this.importChangeDate){
+      this.selectedDateRule = rule;
+      this.selectedDateRuleIndex = index;
+      this.selectedDateRuleIsImported = isImported;
+    } else {
+      this.importChangeDate = false;
+    }
+  }
+
+  importAllDateRules(){
+    this.importedDateRules = this.importedDateRules.concat(this.dateRules);
+  }
+
+  importDateRule(index: number){
+    console.log("HOLA2")
+    this.importedDateRules.push(this.dateRules[index]);
+    this.importChangeDate = true;
+  }
+
+  removeImportedDateRule(index: number){
+    this.importedDateRules.splice(index, 1);
+    this.selectedDateRule = null;
+    this.importChangeDate = true;
+  }
+
+  invalidDates(dateRule: any){
+    let gameStartDate = this.gameForm.get('start_date')?.value;
+    let gameEndDate = this.gameForm.get('end_date')?.value;
+    if (!gameEndDate) return true;
+    gameStartDate = new Date(gameStartDate);
+    gameEndDate = new Date(gameEndDate);
+    let startDate = new Date(dateRule.startDate);
+    let endDate = new Date(dateRule.endDate);
+    return (startDate < gameStartDate || startDate > gameEndDate || endDate < gameStartDate || endDate > gameEndDate);
+  }
+
+  noInvalidDateRange(){
+    for (let dateRule in this.importedDateRules){
+      if (this.invalidDates(this.importedDateRules[dateRule])) return false;
+    }
+    return true
+  }
+
+  formatDate(dateString: string){
+    let dateArray = dateString.split('/')
+    return dateArray[2] + '-' + dateArray[1] + '-' + dateArray[0];
+  }
+
+  changeDateRuleDates(start: any, end: any){
+    console.log(start.value)
+    console.log(end.value)
+    console.log(this.selectedDateRule.startDate)
+    if (start.value && end.value){
+      let startDate = this.formatDate(start.value);
+      let endDate = this.formatDate(end.value);
+      if (this.selectedDateRuleIsImported){
+        this.importedDateRules[this.selectedDateRuleIndex].startDate = startDate;
+        this.importedDateRules[this.selectedDateRuleIndex].endDate = endDate;
+      } else {
+        this.dateRules[this.selectedDateRuleIndex].startDate = startDate;
+        this.dateRules[this.selectedDateRuleIndex].endDate = endDate;
+      }
+    }
   }
 
   ngOnInit(){

@@ -33,3 +33,13 @@
   height: 400px;
   overflow: auto;
 }
+
+.button-label-container{
+  display: flex;
+  align-items: center;
+  gap: 10px
+}
+
+.import-button{
+  scale: 0.75;
+}

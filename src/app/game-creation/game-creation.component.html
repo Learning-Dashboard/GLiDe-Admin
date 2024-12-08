@@ -97,8 +97,13 @@
                 <mat-card class="half-width form-container card">
                   <mat-card-content class="rule-container">
                     <mat-list>
-                      <mat-list-item *ngFor="let simpleRule of simpleRules" (click)="selectSimpleRule(simpleRule)">
-                        {{simpleRule.name}}
+                      <mat-list-item *ngFor="let simpleRule of simpleRules; index as i" (click)="selectSimpleRule(simpleRule)">
+                        <div class="button-label-container">
+                          <button mat-mini-fab color="primary" aria-label="Add Rule" type="button" (click)="importSimpleRule(i)" class="import-button">
+                            <mat-icon>add</mat-icon>
+                          </button>
+                          {{simpleRule.name}}
+                        </div>
                       </mat-list-item>
                     </mat-list>
                   </mat-card-content>
@@ -106,8 +111,13 @@
                 <mat-card class="half-width form-container card">
                   <mat-card-content class="rule-container">
                     <mat-list>
-                      <mat-list-item *ngFor="let simpleRule of importedSimpleRules" (click)="selectSimpleRule(simpleRule)">
-                        {{simpleRule.name}}
+                      <mat-list-item *ngFor="let simpleRule of importedSimpleRules; index as i" (click)="selectSimpleRule(simpleRule)">
+                        <div class="button-label-container">
+                          <button mat-mini-fab color="primary" aria-label="Remove Rule" type="button" (click)="removeImportedSimpleRule(i)" class="import-button">
+                            <mat-icon>remove</mat-icon>
+                          </button>
+                          {{simpleRule.name}}
+                        </div>
                       </mat-list-item>
                     </mat-list>
                   </mat-card-content>
@@ -129,6 +139,71 @@
               </div>
               <div>
                 Condition parameters: {{selectedSimpleRule.achievementAssignmentConditionParameters}}
+              </div>
+            </mat-card>
+            <div *ngIf="dateRules">
+              <mat-card-title class="card-title">Date Rules</mat-card-title>
+              <button mat-raised-button color="primary" type="button" (click)="importAllDateRules()">Import All</button>
+              <div class="horizontal-element-container">
+                <mat-card class="half-width form-container card">
+                  <mat-card-content class="rule-container">
+                    <mat-list>
+                      <mat-list-item *ngFor="let dateRule of dateRules; index as i" (click)="selectDateRule(dateRule, i, false)">
+                        <div class="button-label-container">
+                          <button mat-mini-fab color="primary" aria-label="Add Rule" type="button" (click)="importDateRule(i)" class="import-button">
+                            <mat-icon>add</mat-icon>
+                          </button>
+                          {{dateRule.name}}
+                        </div>
+                      </mat-list-item>
+                    </mat-list>
+                  </mat-card-content>
+                </mat-card>
+                <mat-card class="half-width form-container card">
+                  <mat-card-content class="rule-container">
+                    <mat-list>
+                      <mat-list-item *ngFor="let dateRule of importedDateRules; index as i" (click)="selectDateRule(dateRule, i, true)">
+                        <div class="button-label-container">
+                          <button mat-mini-fab color="primary" aria-label="Remove Rule" type="button" (click)="removeImportedDateRule(i)" class="import-button">
+                            <mat-icon>remove</mat-icon>
+                          </button>
+                          {{dateRule.name}}
+                          <mat-icon *ngIf="invalidDates(dateRule)" title="Invalid dates for game" color="warn">error</mat-icon>
+                        </div>
+                      </mat-list-item>
+                    </mat-list>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+            <mat-card *ngIf="selectedDateRule" class="form-container card full-width">
+              <div>
+                Name: {{selectedDateRule.name}}
+              </div>
+              <div>
+                Message: {{selectedDateRule.achievementAssignmentMessage}}
+              </div>
+              <div>
+                Assigned only first time: {{selectedDateRule.achievementAssignmentOnlyFirstTime}}
+              </div>
+              <div>
+                Condition: {{selectedDateRule.achievementAssignmentCondition}}
+              </div>
+              <div>
+                Condition parameters: {{selectedDateRule.achievementAssignmentConditionParameters}}
+              </div>
+              <div>
+                Dates:
+                <mat-form-field>
+                  <mat-label>Date Range</mat-label>
+                  <mat-date-range-input [rangePicker]="picker">
+                    <input matStartDate readonly placeholder="Start date" [value]=selectedDateRule.startDate required #dateRangeStart>
+                    <input matEndDate readonly placeholder="End date" [value]=selectedDateRule.endDate required #dateRangeEnd (dateChange)="changeDateRuleDates(dateRangeStart, dateRangeEnd)">
+                  </mat-date-range-input>
+                  <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
               </div>
             </mat-card>
           </mat-card>
