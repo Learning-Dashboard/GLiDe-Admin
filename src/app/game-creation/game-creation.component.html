@@ -1,0 +1,160 @@
+<div class="form-container">
+  <mat-card class="card">
+    <mat-card-content class="card-content">
+      <mat-stepper [linear]="true" (selectionChange)="onSelectionChange($event)">
+        <mat-step [stepControl]="subjectType === 'new' ? subjectForm : existingSubjectForm" label="Subject">
+          <mat-radio-group [(ngModel)]="subjectType">
+            <mat-radio-button color="primary" value="existing">
+              <span class="label">Create game from existing subject</span>
+            </mat-radio-button>
+            <mat-radio-button color="primary" value="new">
+              <span class="label">Create game from new subject</span>
+            </mat-radio-button>
+          </mat-radio-group>
+          <mat-card class="form-container card">
+            <form *ngIf="subjectType === 'existing'" [formGroup]="existingSubjectForm">
+              <mat-card-title class="card-title">Select Existing Subject</mat-card-title>
+              <mat-form-field class="full-width">
+                <mat-label>Subject</mat-label>
+                <mat-select formControlName="subject" required>
+                  <mat-option *ngFor="let subject of existingSubjects" [value]=subject>
+                    {{subject.acronym}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </form>
+            <form *ngIf="subjectType === 'new'" [formGroup]="subjectForm">
+              <mat-card-title class="card-title">New Subject Attributes</mat-card-title>
+              <mat-form-field class="full-width">
+                <mat-label>Acronym</mat-label>
+                <input matInput formControlName="acronym" required>
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name" required>
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <mat-label>Code</mat-label>
+                <input matInput formControlName="code" type="number" required>
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <mat-label>Studies</mat-label>
+                <input matInput formControlName="studies" required>
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <mat-label>School</mat-label>
+                <input matInput formControlName="school" required>
+              </mat-form-field>
+            </form>
+          </mat-card>
+          <div>
+            <button mat-button matStepperNext color="primary">Next</button>
+          </div>
+        </mat-step>
+        <mat-step [stepControl]="gameForm" label="Game">
+          <mat-card class="form-container card">
+            <form [formGroup]="gameForm">
+              <mat-card-title class="card-title">Create Game</mat-card-title>
+              <div class="horizontal-element-container">
+                <mat-form-field class="third-width">
+                  <mat-label>Course</mat-label>
+                  <input matInput formControlName="course" type="number" min="0" required>
+                </mat-form-field>
+                <mat-form-field class="third-width">
+                  <mat-label>Period</mat-label>
+                  <mat-select formControlName="period" required>
+                    <mat-option value="Quadrimester1">Q1</mat-option>
+                    <mat-option value="Quadrimester2">Q2</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field class="date-selector third-width">
+                  <mat-label>Date Range</mat-label>
+                  <mat-date-range-input [rangePicker]="picker">
+                    <input matStartDate readonly placeholder="Start date" formControlName="start_date" required>
+                    <input matEndDate readonly placeholder="End date" formControlName="end_date" required>
+                  </mat-date-range-input>
+                  <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+              </div>
+            </form>
+            <mat-card-title class="card-title">Import Rules</mat-card-title>
+            <mat-form-field class="full-width">
+              <mat-label>Game</mat-label>
+              <mat-select (selectionChange)="onGameSelect($event)">
+                <mat-option *ngFor="let game of games" [value]=game>
+                  {{game.subjectAcronym}}
+                  {{game.course}}/{{game.course + 1}}
+                  {{game.period}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div *ngIf="simpleRules">
+              <mat-card-title class="card-title">Simple Rules</mat-card-title>
+              <button mat-raised-button color="primary" type="button" (click)="importAllSimpleRules()">Import All</button>
+              <div class="horizontal-element-container">
+                <mat-card class="half-width form-container card">
+                  <mat-card-content class="rule-container">
+                    <mat-list>
+                      <mat-list-item *ngFor="let simpleRule of simpleRules" (click)="selectSimpleRule(simpleRule)">
+                        {{simpleRule.name}}
+                      </mat-list-item>
+                    </mat-list>
+                  </mat-card-content>
+                </mat-card>
+                <mat-card class="half-width form-container card">
+                  <mat-card-content class="rule-container">
+                    <mat-list>
+                      <mat-list-item *ngFor="let simpleRule of importedSimpleRules" (click)="selectSimpleRule(simpleRule)">
+                        {{simpleRule.name}}
+                      </mat-list-item>
+                    </mat-list>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+            <mat-card *ngIf="selectedSimpleRule" class="form-container card full-width">
+              <div>
+                Name: {{selectedSimpleRule.name}}
+              </div>
+              <div>
+                Message: {{selectedSimpleRule.achievementAssignmentMessage}}
+              </div>
+              <div>
+                Assigned only first time: {{selectedSimpleRule.achievementAssignmentOnlyFirstTime}}
+              </div>
+              <div>
+                Condition: {{selectedSimpleRule.achievementAssignmentCondition}}
+              </div>
+              <div>
+                Condition parameters: {{selectedSimpleRule.achievementAssignmentConditionParameters}}
+              </div>
+            </mat-card>
+          </mat-card>
+          <div>
+            <button mat-button matStepperPrevious color="primary">Back</button>
+            <button mat-button matStepperNext color="primary">Next</button>
+          </div>
+        </mat-step>
+        <mat-step label="Game Level Policy">
+          <form [formGroup]="gameLevelPolicyForm">
+
+          </form>
+          <div>
+            <button mat-button matStepperPrevious color="primary">Back</button>
+            <button mat-button matStepperNext color="primary">Next</button>
+          </div>
+        </mat-step>
+        <mat-step label="Game Groups">
+          <form [formGroup]="groupForm">
+
+          </form>
+          <div>
+            <button mat-button matStepperPrevious color="primary">Back</button>
+          </div>
+        </mat-step>
+      </mat-stepper>
+    </mat-card-content>
+  </mat-card>
+</div>

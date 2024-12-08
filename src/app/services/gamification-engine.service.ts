@@ -66,6 +66,14 @@ export class GamificationEngineService {
     return this.http.get(this.gamificationUrl + '/games');
   }
 
+  getSimpleRules(gameSubjectAcronym: string, gameCourse: string, gamePeriod: string){
+    return this.http.get(this.gamificationUrl + '/rules/simples?gameSubjectAcronym=' + gameSubjectAcronym + '&gameCourse=' + gameCourse + '&gamePeriod=' + gamePeriod);
+  }
+
+  getDateRules(gameSubjectAcronym: string, gameCourse: string, gamePeriod: string){
+    return this.http.get(this.gamificationUrl + '/rules/dates?gameSubjectAcronym=' + gameSubjectAcronym + '&gameCourse=' + gameCourse + '&gamePeriod=' + gamePeriod);
+  }
+
   postLeaderboard(name: string, startDate: string, endDate: string, assessmentLevel: string, extent: string, anonymization: string, studentVisible: boolean, gameSubjectAcronym: string, gameCourse: number, gamePeriod: string, achievementId: number){
     const formData = new FormData();
     formData.append('name', name);

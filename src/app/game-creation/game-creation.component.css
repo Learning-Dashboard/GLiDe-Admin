@@ -1,0 +1,35 @@
+.label {
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.date-selector {
+  margin-bottom: 10px;
+}
+
+.horizontal-element-container{
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-start;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.card-title{
+  margin-bottom: 20px;
+}
+
+.scroll{
+  height: 300px;
+  border: 1px solid black;
+}
+
+.third-width{
+  width: 35%;
+}
+
+.rule-container{
+  height: 400px;
+  overflow: auto;
+}
