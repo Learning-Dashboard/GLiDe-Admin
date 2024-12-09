@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {MatStepperModule} from '@angular/material/stepper';
 import {GamificationEngineService} from '../services/gamification-engine.service';
-import {FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';
@@ -206,12 +206,22 @@ export class GameCreationComponent {
   }
 
   addGameGroup(){
-    this.groups.push(new FormControl);
+    this.groups.push(new FormControl('', Validators.required));
   }
 
   ngOnInit(){
     this.service.getGames().subscribe((result) => {
       this.games = result;
     });
+  }
+
+  isFormValid(): boolean {
+    return this.subjectType === 'new'
+      ? this.subjectForm.valid && this.gameForm.valid && this.gameLevelPolicyForm.valid && this.groupForm.valid
+      : this.existingSubjectForm.valid && this.gameForm.valid && this.gameLevelPolicyForm.valid && this.groupForm.valid;
+  }
+
+  submit(){
+
   }
 }

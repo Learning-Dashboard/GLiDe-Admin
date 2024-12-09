@@ -260,6 +260,9 @@
               </div>
             </form>
           </mat-card>
+          <button mat-raised-button color="primary" (click)="submit()" [disabled]="!isFormValid()">
+            Submit
+          </button>
           <div>
             <button mat-button matStepperPrevious color="primary">Back</button>
           </div>
