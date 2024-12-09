@@ -43,3 +43,22 @@
 .import-button{
   scale: 0.75;
 }
+
+.condition-selector{
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.group-input {
+  width: 90%;
+}
+
+.delete-button{
+  margin-left: 10px;
+}
+
+.add-button{
+  margin-top: 10px;
+}

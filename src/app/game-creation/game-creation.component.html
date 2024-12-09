@@ -242,20 +242,22 @@
           <mat-card class="form-container card">
             <form [formGroup]="groupForm">
               <mat-card-title class="card-title">Create Game Groups</mat-card-title>
-              <div formArrayName="groups">
-                <div *ngFor="let group of groups.controls; let i = index">
-                  <mat-form-field>
-                    <mat-label>Group</mat-label>
-                    <input matInput [formControlName]="i" type="number" required>
-                  </mat-form-field>
-                  <button *ngIf="i > 0" mat-mini-fab color="primary" aria-label="Delete image" type="button" (click)="removeGameGroup(i)">
-                    <mat-icon>delete</mat-icon>
-                  </button>
+              <div class="condition-selector full-width">
+                <div formArrayName="groups" class="half-width">
+                  <div *ngFor="let group of groups.controls; let i = index">
+                    <mat-form-field class="group-input">
+                      <mat-label>Group</mat-label>
+                      <input matInput [formControlName]="i" type="number" required>
+                    </mat-form-field>
+                    <button *ngIf="i > 0" mat-mini-fab color="primary" aria-label="Delete image" type="button" (click)="removeGameGroup(i)" class="delete-button">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
                 </div>
+                <button mat-mini-fab color="primary" aria-label="Add parameter" type="button" (click)="addGameGroup()" class="add-button">
+                  <mat-icon>add</mat-icon>
+                </button>
               </div>
-              <button mat-mini-fab color="primary" aria-label="Add parameter" type="button" (click)="addGameGroup()">
-                <mat-icon>add</mat-icon>
-              </button>
             </form>
           </mat-card>
           <div>
