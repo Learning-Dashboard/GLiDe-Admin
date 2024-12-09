@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import {MatStepperModule} from '@angular/material/stepper';
 import {GamificationEngineService} from '../services/gamification-engine.service';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {MatInput} from '@angular/material/input';
-import {formatDate, NgForOf, NgIf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {
   MatDatepickerToggle,
   MatDateRangeInput,
@@ -32,15 +32,12 @@ export class GameCreationComponent {
   subjectType: string = 'existing';
   existingSubjects: any;
   games: any;
-  selectedGame: any;
   simpleRules: any;
   dateRules: any;
   importedSimpleRules: any[] = [];
   importedDateRules: any[] = [];
   selectedSimpleRule: any;
   selectedDateRule: any;
-  selectedDateRuleIndex: any;
-  selectedDateRuleIsImported: any;
   importChangeDate = false;
   importChangeSimple = false;
 
@@ -67,12 +64,16 @@ export class GameCreationComponent {
   gameLevelPolicyForm: FormGroup = new FormGroup({
     game_subject_acronym: new FormControl,
     game_course: new FormControl,
-    game_period: new FormControl
+    game_period: new FormControl,
+    a: new FormControl,
+    b: new FormControl,
+    c: new FormControl
   });
   groupForm: FormGroup = new FormGroup({
     game_subject_acronym: new FormControl,
     game_course: new FormControl,
-    game_period: new FormControl
+    game_period: new FormControl,
+    groups: new FormArray([new FormControl()])
   });
 
   onSelectionChange(event: any){
@@ -132,11 +133,9 @@ export class GameCreationComponent {
     this.importChangeSimple = true;
   }
 
-  selectDateRule(rule: any, index: any, isImported: any){
+  selectDateRule(rule: any){
     if (!this.importChangeDate){
       this.selectedDateRule = rule;
-      this.selectedDateRuleIndex = index;
-      this.selectedDateRuleIsImported = isImported;
     } else {
       this.importChangeDate = false;
     }
@@ -189,21 +188,25 @@ export class GameCreationComponent {
   }
 
   changeDateRuleDates(start: any, end: any){
-    console.log(start.value)
-    console.log(end.value)
-    console.log(this.selectedDateRule.startDate)
     if (start.value && end.value){
       let startDate = this.formatDate(start.value);
       let endDate = this.formatDate(end.value);
-      if (this.selectedDateRuleIsImported){
-        this.importedDateRules[this.selectedDateRuleIndex].startDate = startDate;
-        this.importedDateRules[this.selectedDateRuleIndex].endDate = endDate;
-      } else {
-        this.dateRules[this.selectedDateRuleIndex].startDate = startDate;
-        this.dateRules[this.selectedDateRuleIndex].endDate = endDate;
-      }
+      this.selectedDateRule.startDate = startDate;
+      this.selectedDateRule.endDate = endDate;
       this.noInvalidDateRange();
     }
+  }
+
+  get groups(){
+    return this.groupForm.get("groups") as FormArray;
+  }
+
+  removeGameGroup(index: number){
+    this.groups.removeAt(index);
+  }
+
+  addGameGroup(){
+    this.groups.push(new FormControl);
   }
 
   ngOnInit(){

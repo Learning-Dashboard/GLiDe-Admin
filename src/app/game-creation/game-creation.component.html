@@ -149,7 +149,7 @@
                 <mat-card class="half-width form-container card">
                   <mat-card-content class="rule-container">
                     <mat-list>
-                      <mat-list-item *ngFor="let dateRule of dateRules; index as i" (click)="selectDateRule(dateRule, i, false)">
+                      <mat-list-item *ngFor="let dateRule of dateRules; index as i" (click)="selectDateRule(dateRule)">
                         <div class="button-label-container">
                           <button mat-mini-fab color="primary" aria-label="Add Rule" type="button" (click)="importDateRule(i)" class="import-button">
                             <mat-icon>add</mat-icon>
@@ -163,7 +163,7 @@
                 <mat-card class="half-width form-container card">
                   <mat-card-content class="rule-container">
                     <mat-list>
-                      <mat-list-item *ngFor="let dateRule of importedDateRules; index as i" (click)="selectDateRule(dateRule, i, true)">
+                      <mat-list-item *ngFor="let dateRule of importedDateRules; index as i" (click)="selectDateRule(dateRule)">
                         <div class="button-label-container">
                           <button mat-mini-fab color="primary" aria-label="Remove Rule" type="button" (click)="removeImportedDateRule(i)" class="import-button">
                             <mat-icon>remove</mat-icon>
@@ -213,19 +213,51 @@
             <button mat-button matStepperNext color="primary">Next</button>
           </div>
         </mat-step>
-        <mat-step label="Game Level Policy">
-          <form [formGroup]="gameLevelPolicyForm">
-
-          </form>
+        <mat-step [stepControl]="gameLevelPolicyForm" label="Game Level Policy">
+          <mat-card class="form-container card">
+            <form [formGroup]="gameLevelPolicyForm">
+              <mat-card-title class="card-title">Create Game Level Policy</mat-card-title>
+              <div class="horizontal-element-container">
+                <mat-form-field class="third-width">
+                  <mat-label>a</mat-label>
+                  <input matInput formControlName="a" type="number" placeholder="1" min="0" required>
+                </mat-form-field>
+                <mat-form-field class="third-width">
+                  <mat-label>b</mat-label>
+                  <input matInput formControlName="b" type="number" placeholder="1.4" min="0" required>
+                </mat-form-field>
+                <mat-form-field class="third-width">
+                  <mat-label>c</mat-label>
+                  <input matInput formControlName="c" type="number" placeholder="2" min="0" required>
+                </mat-form-field>
+              </div>
+            </form>
+          </mat-card>
           <div>
             <button mat-button matStepperPrevious color="primary">Back</button>
             <button mat-button matStepperNext color="primary">Next</button>
           </div>
         </mat-step>
-        <mat-step label="Game Groups">
-          <form [formGroup]="groupForm">
-
-          </form>
+        <mat-step [stepControl]="groupForm" label="Game Groups">
+          <mat-card class="form-container card">
+            <form [formGroup]="groupForm">
+              <mat-card-title class="card-title">Create Game Groups</mat-card-title>
+              <div formArrayName="groups">
+                <div *ngFor="let group of groups.controls; let i = index">
+                  <mat-form-field>
+                    <mat-label>Group</mat-label>
+                    <input matInput [formControlName]="i" type="number" required>
+                  </mat-form-field>
+                  <button *ngIf="i > 0" mat-mini-fab color="primary" aria-label="Delete image" type="button" (click)="removeGameGroup(i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+              <button mat-mini-fab color="primary" aria-label="Add parameter" type="button" (click)="addGameGroup()">
+                <mat-icon>add</mat-icon>
+              </button>
+            </form>
+          </mat-card>
           <div>
             <button mat-button matStepperPrevious color="primary">Back</button>
           </div>
