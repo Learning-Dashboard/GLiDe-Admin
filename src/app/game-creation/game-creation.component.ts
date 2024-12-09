@@ -61,7 +61,8 @@ export class GameCreationComponent {
     course: new FormControl,
     period: new FormControl,
     start_date: new FormControl,
-    end_date: new FormControl
+    end_date: new FormControl,
+    valid: new FormControl(true)
   });
   gameLevelPolicyForm: FormGroup = new FormGroup({
     game_subject_acronym: new FormControl,
@@ -132,7 +133,6 @@ export class GameCreationComponent {
   }
 
   selectDateRule(rule: any, index: any, isImported: any){
-    console.log("HOLA1");
     if (!this.importChangeDate){
       this.selectedDateRule = rule;
       this.selectedDateRuleIndex = index;
@@ -144,18 +144,20 @@ export class GameCreationComponent {
 
   importAllDateRules(){
     this.importedDateRules = this.importedDateRules.concat(this.dateRules);
+    this.noInvalidDateRange();
   }
 
   importDateRule(index: number){
-    console.log("HOLA2")
     this.importedDateRules.push(this.dateRules[index]);
     this.importChangeDate = true;
+    this.noInvalidDateRange();
   }
 
   removeImportedDateRule(index: number){
     this.importedDateRules.splice(index, 1);
     this.selectedDateRule = null;
     this.importChangeDate = true;
+    this.noInvalidDateRange();
   }
 
   invalidDates(dateRule: any){
@@ -170,10 +172,15 @@ export class GameCreationComponent {
   }
 
   noInvalidDateRange(){
+    let invalid = false;
     for (let dateRule in this.importedDateRules){
-      if (this.invalidDates(this.importedDateRules[dateRule])) return false;
+      if (this.invalidDates(this.importedDateRules[dateRule])) {
+        this.gameForm.controls['valid'].setValue(null);
+        invalid = true;
+        break;
+      }
     }
-    return true
+    if (!invalid) this.gameForm.controls['valid'].setValue(true);
   }
 
   formatDate(dateString: string){
@@ -195,6 +202,7 @@ export class GameCreationComponent {
         this.dateRules[this.selectedDateRuleIndex].startDate = startDate;
         this.dateRules[this.selectedDateRuleIndex].endDate = endDate;
       }
+      this.noInvalidDateRange();
     }
   }
 

@@ -54,6 +54,7 @@
         <mat-step [stepControl]="gameForm" label="Game">
           <mat-card class="form-container card">
             <form [formGroup]="gameForm">
+              <input hidden formControlName="valid" required>
               <mat-card-title class="card-title">Create Game</mat-card-title>
               <div class="horizontal-element-container">
                 <mat-form-field class="third-width">
@@ -71,7 +72,7 @@
                   <mat-label>Date Range</mat-label>
                   <mat-date-range-input [rangePicker]="picker">
                     <input matStartDate readonly placeholder="Start date" formControlName="start_date" required>
-                    <input matEndDate readonly placeholder="End date" formControlName="end_date" required>
+                    <input matEndDate readonly placeholder="End date" formControlName="end_date" required (dateChange)="noInvalidDateRange()">
                   </mat-date-range-input>
                   <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
                   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
