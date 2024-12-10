@@ -18,6 +18,7 @@ import {
 import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
 import {MatListModule} from '@angular/material/list';
 import {MatIcon} from '@angular/material/icon';
+import {forkJoin, iif, of, switchMap} from 'rxjs';
 
 
 @Component({
@@ -62,41 +63,20 @@ export class GameCreationComponent {
     valid: new FormControl(true)
   });
   gameLevelPolicyForm: FormGroup = new FormGroup({
-    game_subject_acronym: new FormControl,
-    game_course: new FormControl,
-    game_period: new FormControl,
-    a: new FormControl,
-    b: new FormControl,
-    c: new FormControl
+    a: new FormControl(1),
+    b: new FormControl(1.4),
+    c: new FormControl(2)
   });
   groupForm: FormGroup = new FormGroup({
-    game_subject_acronym: new FormControl,
-    game_course: new FormControl,
-    game_period: new FormControl,
     groups: new FormArray([new FormControl()])
   });
 
   onSelectionChange(event: any){
-    console.log(event.previouslySelectedIndex);
-    switch (event.previouslySelectedIndex) {
-      case 0:
-        if (this.subjectType === 'existing') this.gameForm.controls['subject_acronym']
-          .setValue((this.existingSubjectForm.get('subject')?.value).acronym);
-        else this.gameForm.controls['subject_acronym']
-          .setValue(this.subjectForm.get('acronym')?.value);
-        break;
-      case 1:
-        this.gameLevelPolicyForm.controls['game_subject_acronym'].setValue(this.gameForm.get('subject_acronym')?.value);
-        this.gameLevelPolicyForm.controls['game_course'].setValue(this.gameForm.get('course')?.value);
-        this.gameLevelPolicyForm.controls['game_period'].setValue(this.gameForm.get('period')?.value);
-        this.groupForm.controls['game_subject_acronym'].setValue(this.gameForm.get('subject_acronym')?.value);
-        this.groupForm.controls['game_course'].setValue(this.gameForm.get('course')?.value);
-        this.groupForm.controls['game_period'].setValue(this.gameForm.get('period')?.value);
-        break;
-      case 2:
-        break;
-      case 3:
-        break;
+    if(event.previouslySelectedIndex === 0){
+      if (this.subjectType === 'existing') this.gameForm.controls['subject_acronym']
+        .setValue((this.existingSubjectForm.get('subject')?.value).acronym);
+      else this.gameForm.controls['subject_acronym']
+        .setValue(this.subjectForm.get('acronym')?.value);
     }
   }
 
@@ -111,7 +91,6 @@ export class GameCreationComponent {
   }
 
   selectSimpleRule(rule: any){
-    console.log(rule);
     if (!this.importChangeSimple) {
       this.selectedSimpleRule = rule;
     } else {
@@ -213,6 +192,9 @@ export class GameCreationComponent {
     this.service.getGames().subscribe((result) => {
       this.games = result;
     });
+    this.service.getSubjects().subscribe((result) => {
+      this.existingSubjects = result;
+    })
   }
 
   isFormValid(): boolean {
@@ -222,6 +204,84 @@ export class GameCreationComponent {
   }
 
   submit(){
+    let startDate = this.gameForm.get('start_date')?.value;
+    let endDate = this.gameForm.get('end_date')?.value;
+    startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset())
+    startDate = startDate.toJSON().substring(0,10);
+    endDate.setMinutes(endDate.getMinutes() - endDate.getTimezoneOffset())
+    endDate = endDate.toJSON().substring(0,10);
 
+    let simpleRuleObservables = this.importedSimpleRules.map((simpleRule) =>
+      this.service.postSimpleRule(
+        simpleRule.name,
+        simpleRule.repetitions,
+        this.gameForm.get('subject_acronym')?.value,
+        this.gameForm.get('course')?.value,
+        this.gameForm.get('period')?.value,
+        simpleRule.evaluableActionId,
+        simpleRule.achievementId,
+        simpleRule.achievementAssignmentMessage,
+        simpleRule.achievementAssignmentOnlyFirstTime,
+        simpleRule.achievementAssignmentCondition,
+        simpleRule.achievementAssignmentConditionParameters,
+        simpleRule.achievementAssignmentUnits,
+        simpleRule.achievementAssignmentAssessmentLevel
+      )
+    );
+    let dateRuleObservables = this.importedDateRules.map((dateRule) =>
+      this.service.postDateRule(
+        dateRule.name,
+        dateRule.repetitions,
+        this.gameForm.get('subject_acronym')?.value,
+        this.gameForm.get('course')?.value,
+        this.gameForm.get('period')?.value,
+        dateRule.evaluableActionId,
+        dateRule.achievementId,
+        dateRule.achievementAssignmentMessage,
+        dateRule.achievementAssignmentOnlyFirstTime,
+        dateRule.achievementAssignmentCondition,
+        dateRule.achievementAssignmentConditionParameters,
+        dateRule.achievementAssignmentUnits,
+        dateRule.achievementAssignmentAssessmentLevel,
+        dateRule.startDate,
+        dateRule.endDate
+      )
+    );
+
+    let groups: string[] = this.groupForm.get('groups')?.value;
+    let groupObservables = groups.map((group) =>
+      this.service.postGameGroup(
+        this.gameForm.get('subject_acronym')?.value,
+        this.gameForm.get('course')?.value,
+        this.gameForm.get('period')?.value,
+        group
+      )
+    );
+
+    iif(
+      () => this.subjectType === 'new',
+      this.service.postSubject(this.subjectForm.get('acronym')?.value,
+        this.subjectForm.get('code')?.value,
+        this.subjectForm.get('name')?.value,
+        this.subjectForm.get('studies')?.value,
+        this.subjectForm.get('school')?.value),
+      of(null)
+    ).pipe(switchMap( () => {
+      return this.service.postGame(this.gameForm.get('subject_acronym')?.value,
+        this.gameForm.get('course')?.value,
+        this.gameForm.get('period')?.value,
+        startDate,
+        endDate,
+        this.gameLevelPolicyForm.get('a')?.value,
+        this.gameLevelPolicyForm.get('b')?.value,
+        this.gameLevelPolicyForm.get('c')?.value,);
+    }),
+    switchMap(() => {
+      return forkJoin([
+        ...simpleRuleObservables,
+        ...dateRuleObservables,
+        ...groupObservables
+      ]);
+    })).subscribe();
   }
 }

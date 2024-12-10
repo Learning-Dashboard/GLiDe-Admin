@@ -66,6 +66,19 @@ export class GamificationEngineService {
     return this.http.get(this.gamificationUrl + '/games');
   }
 
+  postGame(subjectAcronym: string, course: number, period: string, startDate: string, endDate: string, firstParameter: number, secondParameter: number, thirdParameter: number){
+    const formData = new FormData();
+    formData.append('subjectAcronym', subjectAcronym);
+    formData.append('course', String(course));
+    formData.append('period', period);
+    formData.append('startDate', startDate);
+    formData.append('endDate', endDate);
+    formData.append('firstLevelPolicyParameter', String(firstParameter));
+    formData.append('secondLevelPolicyParameter', String(secondParameter));
+    formData.append('thirdLevelPolicyParameter', String(thirdParameter));
+    return this.http.post(this.gamificationUrl + '/games', formData, {observe: 'response'});
+  }
+
   getSimpleRules(gameSubjectAcronym: string, gameCourse: string, gamePeriod: string){
     return this.http.get(this.gamificationUrl + '/rules/simples?gameSubjectAcronym=' + gameSubjectAcronym + '&gameCourse=' + gameCourse + '&gamePeriod=' + gamePeriod);
   }
@@ -88,5 +101,28 @@ export class GamificationEngineService {
     formData.append('gamePeriod', gamePeriod);
     formData.append('achievementId', String(achievementId));
     return this.http.post(this.gamificationUrl + '/leaderboards', formData, {observe: 'response'});
+  }
+
+  getSubjects(){
+    return this.http.get(this.gamificationUrl + '/subjects');
+  }
+
+  postSubject(acronym: string, code: number, name: string, studies: string, school: string){
+    const formData = new FormData();
+    formData.append('acronym', acronym);
+    formData.append('code', String(code));
+    formData.append('name', name);
+    formData.append('studies', studies);
+    formData.append('school', school);
+    return this.http.post(this.gamificationUrl + '/subjects', formData, {observe: 'response'})
+  }
+
+  postGameGroup(gameSubjectAcronym: string, gameCourse: number, gamePeriod: string, group: string){
+    const formData = new FormData();
+    formData.append('gameSubjectAcronym', gameSubjectAcronym);
+    formData.append('gameCourse', String(gameCourse));
+    formData.append('gamePeriod', gamePeriod);
+    formData.append('group', group);
+    return this.http.post(this.gamificationUrl + '/gameGroups', formData, {observe: 'response'});
   }
 }
