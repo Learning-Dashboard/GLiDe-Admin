@@ -1,7 +1,7 @@
 <div class="form-container">
   <mat-card class="card">
     <mat-card-content class="card-content">
-      <mat-stepper [linear]="true" (selectionChange)="onSelectionChange($event)">
+      <mat-stepper [linear]="true" (selectionChange)="onSelectionChange($event)" #stepper>
         <mat-step [stepControl]="subjectType === 'new' ? subjectForm : existingSubjectForm" label="Subject">
           <mat-radio-group [(ngModel)]="subjectType">
             <mat-radio-button color="primary" value="existing">

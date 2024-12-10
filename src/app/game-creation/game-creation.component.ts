@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import {MatStepperModule} from '@angular/material/stepper';
+import {Component, ViewChild} from '@angular/core';
+import {MatStepper, MatStepperModule} from '@angular/material/stepper';
 import {GamificationEngineService} from '../services/gamification-engine.service';
 import {FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
@@ -30,6 +30,8 @@ import {forkJoin, iif, of, switchMap} from 'rxjs';
   styleUrl: './game-creation.component.css'
 })
 export class GameCreationComponent {
+  @ViewChild('stepper') stepper!: MatStepper;
+
   subjectType: string = 'existing';
   existingSubjects: any;
   games: any;
@@ -282,6 +284,9 @@ export class GameCreationComponent {
         ...dateRuleObservables,
         ...groupObservables
       ]);
-    })).subscribe();
+    })).subscribe(() => {
+      this.stepper.reset();
+      this.gameLevelPolicyForm.reset({ a: 1, b: 1.4, c: 2 });
+    });
   }
 }
