@@ -18,7 +18,7 @@ import {
 import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
 import {MatListModule} from '@angular/material/list';
 import {MatIcon} from '@angular/material/icon';
-import {forkJoin, iif, of, switchMap} from 'rxjs';
+import {catchError, forkJoin, iif, of, switchMap, throwError} from 'rxjs';
 
 
 @Component({
@@ -266,7 +266,13 @@ export class GameCreationComponent {
         this.subjectForm.get('code')?.value,
         this.subjectForm.get('name')?.value,
         this.subjectForm.get('studies')?.value,
-        this.subjectForm.get('school')?.value),
+        this.subjectForm.get('school')?.value).pipe(
+          catchError((error) => {
+            alert('Error creating subject: Subject with this acronym, name or code already exists.');
+            this.stepper.selectedIndex = 0;
+            return throwError(() => error);
+          })
+      ),
       of(null)
     ).pipe(switchMap( () => {
       return this.service.postGame(this.gameForm.get('subject_acronym')?.value,
@@ -276,7 +282,14 @@ export class GameCreationComponent {
         endDate,
         this.gameLevelPolicyForm.get('a')?.value,
         this.gameLevelPolicyForm.get('b')?.value,
-        this.gameLevelPolicyForm.get('c')?.value,);
+        this.gameLevelPolicyForm.get('c')?.value
+        ).pipe(
+          catchError((error) => {
+            alert('Error creating game: Game with this course and period already exists.');
+            this.stepper.selectedIndex = 1;
+            return throwError(() => error);
+          })
+      );
     }),
     switchMap(() => {
       return forkJoin([
@@ -285,6 +298,7 @@ export class GameCreationComponent {
         ...groupObservables
       ]);
     })).subscribe(() => {
+      alert('Game created successfully.');
       this.stepper.reset();
       this.gameLevelPolicyForm.reset({ a: 1, b: 1.4, c: 2 });
     });
