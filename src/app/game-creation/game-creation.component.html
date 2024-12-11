@@ -58,11 +58,11 @@
               <mat-card-title class="card-title">Create Game</mat-card-title>
               <div class="horizontal-element-container">
                 <mat-form-field class="third-width">
-                  <mat-label>Course</mat-label>
+                  <mat-label>First Year of Course</mat-label>
                   <input matInput formControlName="course" type="number" min="0" required>
                 </mat-form-field>
                 <mat-form-field class="third-width">
-                  <mat-label>Period</mat-label>
+                  <mat-label>Quadrimester</mat-label>
                   <mat-select formControlName="period" required>
                     <mat-option value="Quadrimester1">Q1</mat-option>
                     <mat-option value="Quadrimester2">Q2</mat-option>
@@ -126,21 +126,14 @@
               </div>
             </div>
             <mat-card *ngIf="selectedSimpleRule" class="form-container card full-width">
-              <div>
-                Name: {{selectedSimpleRule.name}}
-              </div>
-              <div>
-                Message: {{selectedSimpleRule.achievementAssignmentMessage}}
-              </div>
-              <div>
-                Assigned only first time: {{selectedSimpleRule.achievementAssignmentOnlyFirstTime}}
-              </div>
-              <div>
-                Condition: {{selectedSimpleRule.achievementAssignmentCondition}}
-              </div>
-              <div>
-                Condition parameters: {{selectedSimpleRule.achievementAssignmentConditionParameters}}
-              </div>
+              <p class="rule-info-paragraf">
+                Name: {{selectedSimpleRule.name}}<br>
+                Message: {{selectedSimpleRule.achievementAssignmentMessage}}<br>
+                Assigned only first time: {{selectedSimpleRule.achievementAssignmentOnlyFirstTime}}<br>
+                Evaluable action: {{selectedSimpleRule.evaluableActionId}}<br>
+                Condition: {{selectedSimpleRule.achievementAssignmentCondition}}<br>
+                Condition parameters: {{selectedSimpleRule.achievementAssignmentConditionParameters}}<br>
+              </p>
             </mat-card>
             <div *ngIf="dateRules">
               <mat-card-title class="card-title">Date Rules</mat-card-title>
@@ -178,22 +171,15 @@
               </div>
             </div>
             <mat-card *ngIf="selectedDateRule" class="form-container card full-width">
-              <div>
-                Name: {{selectedDateRule.name}}
-              </div>
-              <div>
-                Message: {{selectedDateRule.achievementAssignmentMessage}}
-              </div>
-              <div>
-                Assigned only first time: {{selectedDateRule.achievementAssignmentOnlyFirstTime}}
-              </div>
-              <div>
-                Condition: {{selectedDateRule.achievementAssignmentCondition}}
-              </div>
-              <div>
-                Condition parameters: {{selectedDateRule.achievementAssignmentConditionParameters}}
-              </div>
-              <div>
+              <p class="rule-info-paragraf">
+                Name: {{selectedDateRule.name}}<br>
+                Message: {{selectedDateRule.achievementAssignmentMessage}}<br>
+                Assigned only first time: {{selectedDateRule.achievementAssignmentOnlyFirstTime}}<br>
+                Evaluable action: {{selectedDateRule.evaluableActionId}}<br>
+                Condition: {{selectedDateRule.achievementAssignmentCondition}}<br>
+                Condition parameters: {{selectedDateRule.achievementAssignmentConditionParameters}}<br>
+              </p>
+              <div class="rule-info-paragraf">
                 Dates:
                 <mat-form-field>
                   <mat-label>Date Range</mat-label>
@@ -217,6 +203,11 @@
           <mat-card class="form-container card">
             <form [formGroup]="gameLevelPolicyForm">
               <mat-card-title class="card-title">Create Game Level Policy</mat-card-title>
+              <p>
+                Players will be granted levels according to the amount of points they have acquired. The amount of points needed to level up is determined by the following function:
+                <var>points</var> = <var>a</var> · <var>b</var> <sup>(<var>level</var> · <var>c</var>)</sup><br>
+                If you wish you can change the values of a, b and c to modify the difficulty of leveling up, otherwise you can use the suggested values.
+              </p>
               <div class="horizontal-element-container">
                 <mat-form-field class="third-width">
                   <mat-label>a</mat-label>
@@ -246,10 +237,10 @@
                 <div formArrayName="groups" class="half-width">
                   <div *ngFor="let group of groups.controls; let i = index">
                     <mat-form-field class="group-input">
-                      <mat-label>Group</mat-label>
+                      <mat-label>Group Number</mat-label>
                       <input matInput [formControlName]="i" type="number" required>
                     </mat-form-field>
-                    <button *ngIf="i > 0" mat-mini-fab color="primary" aria-label="Delete image" type="button" (click)="removeGameGroup(i)" class="delete-button">
+                    <button *ngIf="i > 0" mat-mini-fab color="primary" aria-label="Delete group" type="button" (click)="removeGameGroup(i)" class="delete-button">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </div>

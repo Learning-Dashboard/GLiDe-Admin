@@ -55,10 +55,15 @@
   width: 90%;
 }
 
-.delete-button{
+.delete-button {
   margin-left: 10px;
 }
 
-.add-button{
+.add-button {
   margin-top: 10px;
+}
+
+.rule-info-paragraf {
+  font-size: 18px;
+  line-height: 2;
 }
