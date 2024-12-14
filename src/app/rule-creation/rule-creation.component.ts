@@ -98,6 +98,18 @@ export class RuleCreationComponent {
     });
   }
 
+  getRecommendedNameMessage(){
+    let evaluableAction = this.form.get('evaluableAction')?.value;
+    this.service.postOpenAI(evaluableAction.description,
+      this.form.get('achievementAssignmentCondition')?.value,
+      this.form.get('achievementAssignmentParameters')?.value).subscribe((result) => {
+        let response: any = result;
+        console.log(response);
+        this.form.get('name')?.setValue(response.name);
+        this.form.get('achievementAssignmentMessage')?.setValue(response.achievementAssignmentMessage);
+    });
+  }
+
   onSubmit(){
     console.log(this.form.get('game')?.value);
     console.log(this.form.get('evaluableAction')?.value);

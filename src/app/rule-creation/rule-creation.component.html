@@ -63,10 +63,6 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field class="full-width">
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" required>
-      </mat-form-field>
       <div class="horizontal-element-container">
         <div class="group-selector">
           <mat-label class="label-title">Rule Type:</mat-label>
@@ -103,6 +99,11 @@
           <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
       </div>
+      <button mat-raised-button color="primary" type="button" class="group-selector" (click)="getRecommendedNameMessage()">Propose name and message for the rule</button>
+      <mat-form-field class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required>
+      </mat-form-field>
       <mat-form-field class="full-width">
         <mat-label>Achievement Assignment Message</mat-label>
         <textarea matInput formControlName="achievementAssignmentMessage" required></textarea>

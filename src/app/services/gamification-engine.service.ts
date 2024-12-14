@@ -131,6 +131,6 @@ export class GamificationEngineService {
     formData.append('evaluableActionDescription', evaluableActionDescription);
     formData.append('condition', condition);
     formData.append('conditionParameters', JSON.stringify(conditionParameters));
-    return this.http.post(this.gamificationUrl + '/openAiApi', formData, {observe: 'response'});
+    return this.http.post(this.gamificationUrl + '/openAiApi', formData);
   }
 }
