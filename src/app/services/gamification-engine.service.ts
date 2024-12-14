@@ -125,4 +125,12 @@ export class GamificationEngineService {
     formData.append('group', group);
     return this.http.post(this.gamificationUrl + '/gameGroups', formData, {observe: 'response'});
   }
+
+  postOpenAI(evaluableActionDescription: string, condition: string, conditionParameters: any[]){
+    const formData = new FormData();
+    formData.append('evaluableActionDescription', evaluableActionDescription);
+    formData.append('condition', condition);
+    formData.append('conditionParameters', JSON.stringify(conditionParameters));
+    return this.http.post(this.gamificationUrl + '/openAiApi', formData, {observe: 'response'});
+  }
 }
