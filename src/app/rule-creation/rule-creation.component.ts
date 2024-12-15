@@ -25,6 +25,7 @@ export class RuleCreationComponent {
   evaluableActions: any;
   games: any;
   achievements: any;
+  canCallOpenAI: boolean = false;
   protected conditions = [
     ['ValueGreaterThan', '>'],
     ['ValueLessThan', '<'],
@@ -65,7 +66,12 @@ export class RuleCreationComponent {
     this.achievementAssignmentParameters.removeAt(i);
   }
 
+  openAiParameterChange(){
+    if (this.achievementAssignmentParameters.valid) this.canCallOpenAI = true;
+  }
+
   protected conditionChange(){
+    this.openAiParameterChange();
     if (this.form.get('achievementAssignmentCondition')?.value !== 'ValueInsideOfRange' && this.form.get('achievementAssignmentCondition')?.value !== 'ValueOutsideOfRange') {
       const parameters = this.form.controls['achievementAssignmentParameters'] as FormArray;
       const firstValue = parameters.at(0);
@@ -95,6 +101,19 @@ export class RuleCreationComponent {
     });
     this.service.getAchievements().subscribe((result) => {
       this.achievements = result;
+    });
+  }
+
+  getRecommendedNameMessage(){
+    let evaluableAction = this.form.get('evaluableAction')?.value;
+    this.service.postOpenAI(evaluableAction.description,
+      this.form.get('achievementAssignmentCondition')?.value,
+      this.form.get('achievementAssignmentParameters')?.value).subscribe((result) => {
+        let response: any = result;
+        console.log(response);
+        this.form.get('name')?.setValue(response.name);
+        this.form.get('achievementAssignmentMessage')?.setValue(response.achievementAssignmentMessage);
+        this.canCallOpenAI = false;
     });
   }
 

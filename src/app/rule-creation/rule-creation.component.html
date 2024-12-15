@@ -17,7 +17,7 @@
       <div class="condition-selector">
         <mat-form-field class="half-width">
           <mat-label>Evaluable action</mat-label>
-          <mat-select formControlName="evaluableAction" required>
+          <mat-select formControlName="evaluableAction" (selectionChange)="openAiParameterChange()" required>
             <mat-select-trigger *ngIf="form.get('evaluableAction')?.value">
               {{(form.get('evaluableAction')?.value).id}}
             </mat-select-trigger>
@@ -42,7 +42,7 @@
             <div *ngFor="let parameter of achievementAssignmentParameters.controls; let i = index">
               <mat-form-field>
                 <mat-label>Parameter</mat-label>
-                <input matInput [formControlName]="i" type="number" required>
+                <input matInput [formControlName]="i" type="number" (input)="openAiParameterChange()" required>
               </mat-form-field>
               <button *ngIf="i > 0" mat-mini-fab color="primary" aria-label="Delete parameter" type="button" (click)="removeAchievementAssignmentParameter(i)" class="delete-button">
                 <mat-icon>delete</mat-icon>
@@ -62,10 +62,6 @@
             {{achievement.category}}
           </mat-option>
         </mat-select>
-      </mat-form-field>
-      <mat-form-field class="full-width">
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" required>
       </mat-form-field>
       <div class="horizontal-element-container">
         <div class="group-selector">
@@ -103,6 +99,11 @@
           <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
       </div>
+      <button mat-raised-button color="primary" type="button" class="group-selector" (click)="getRecommendedNameMessage()" [disabled]="!canCallOpenAI">Propose name and message for the rule</button>
+      <mat-form-field class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required>
+      </mat-form-field>
       <mat-form-field class="full-width">
         <mat-label>Achievement Assignment Message</mat-label>
         <textarea matInput formControlName="achievementAssignmentMessage" required></textarea>
