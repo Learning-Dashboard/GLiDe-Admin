@@ -6,7 +6,7 @@
     <mat-card-content class="card-content">
       <mat-form-field class="full-width">
         <mat-label>Game</mat-label>
-        <mat-select formControlName="game" required>
+        <mat-select formControlName="game" (selectionChange)="onGameSelect($event)" required>
           <mat-option *ngFor="let game of games" [value]=game>
             {{game.subjectAcronym}}
             {{game.course}}/{{game.course + 1}}

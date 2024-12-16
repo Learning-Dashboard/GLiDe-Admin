@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {GamificationEngineService} from '../services/gamification-engine.service';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
+import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
@@ -88,6 +88,8 @@ export class RuleCreationComponent {
   }
 
   ngOnInit(){
+    let selectedGame = localStorage.getItem('selectedGame');
+    if(selectedGame) selectedGame = JSON.parse(selectedGame);
     this.service.getEvaluableActions().subscribe((result) => {
       this.evaluableActions = result;
     });
@@ -95,7 +97,10 @@ export class RuleCreationComponent {
       let games: any = result;
       let finalGames = [];
       for (let game in games){
-        if(games[game].state !== 'Finished') finalGames.push(games[game]);
+        if(games[game].state !== 'Finished'){
+          finalGames.push(games[game]);
+          if(JSON.stringify(selectedGame) === JSON.stringify(games[game])) this.form.get('game')?.setValue(games[game]);
+        }
       }
       if(finalGames.length !== 0) this.games = finalGames;
     });
@@ -115,6 +120,11 @@ export class RuleCreationComponent {
         this.form.get('achievementAssignmentMessage')?.setValue(response.achievementAssignmentMessage);
         this.canCallOpenAI = false;
     });
+  }
+
+  onGameSelect(event: MatSelectChange){
+    let game = event.value;
+    localStorage.setItem('selectedGame', JSON.stringify(game));
   }
 
   onSubmit(){
