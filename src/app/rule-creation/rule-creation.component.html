@@ -89,14 +89,14 @@
       </div>
       <div *ngIf="form.get('ruleType')?.value === 'date'" class="full-width group-selector">
         <mat-form-field class="half-width">
-          <mat-label>Period</mat-label>
+          <mat-label>Rule Period</mat-label>
           <mat-date-range-input [rangePicker]="picker">
             <input matStartDate readonly placeholder="Start date" formControlName="startDate" required>
             <input matEndDate readonly placeholder="End date" formControlName="endDate" required>
           </mat-date-range-input>
           <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
+          <mat-date-range-picker touchUi="true" #picker></mat-date-range-picker>
         </mat-form-field>
       </div>
       <button mat-raised-button color="primary" type="button" class="group-selector" (click)="getRecommendedNameMessage()" [disabled]="!canCallOpenAI">Propose name and message for the rule</button>

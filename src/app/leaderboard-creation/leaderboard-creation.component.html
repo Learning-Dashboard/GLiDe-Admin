@@ -27,15 +27,15 @@
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" required>
       </mat-form-field>
-      <mat-form-field class="date-container">
-        <mat-label>Period</mat-label>
+      <mat-form-field class="date-container half-width">
+        <mat-label>Leaderboard Period</mat-label>
         <mat-date-range-input [rangePicker]="picker">
           <input matStartDate readonly placeholder="Start date" formControlName="startDate" required>
           <input matEndDate readonly placeholder="End date" formControlName="endDate" required>
         </mat-date-range-input>
         <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
+        <mat-date-range-picker touchUi="true" #picker></mat-date-range-picker>
       </mat-form-field>
       <mat-form-field class="full-width">
         <mat-label>Assessment Level</mat-label>
