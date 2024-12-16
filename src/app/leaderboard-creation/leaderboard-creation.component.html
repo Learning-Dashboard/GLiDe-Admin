@@ -14,10 +14,13 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field class="full-width">
+      <div *ngIf="selectedGame && filteredAchievements.length === 0" class="error-message">
+        Warning! In order to define a leaderboard for an achievement, the game must have at least one rule with that achievement.
+      </div>
+      <mat-form-field *ngIf="selectedGame" class="full-width">
         <mat-label>Achievement</mat-label>
         <mat-select formControlName="achievement" required>
-          <mat-option *ngFor="let achievement of achievements" [value]=achievement.id>
+          <mat-option *ngFor="let achievement of filteredAchievements" [value]=achievement.id>
             {{achievement.name}}
             {{achievement.category}}
           </mat-option>

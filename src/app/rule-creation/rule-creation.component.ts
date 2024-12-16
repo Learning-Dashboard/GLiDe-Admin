@@ -164,8 +164,10 @@ export class RuleCreationComponent {
       ).subscribe((result) => {
         console.log(result.status);
         if(result.status === 201) {
+          alert('Simple rule created successfully.');
           this.resetForm();
         }
+        else alert('An unexpected error occurred.');
       });
     }
     else if (this.form.get('ruleType')?.value === 'date'){
@@ -194,8 +196,10 @@ export class RuleCreationComponent {
       ).subscribe((result) => {
         console.log(result.status);
         if(result.status === 201) {
+          alert('Date rule created successfully.');
           this.resetForm();
         }
+        else alert('An unexpected error occurred.');
       });
     }
   }

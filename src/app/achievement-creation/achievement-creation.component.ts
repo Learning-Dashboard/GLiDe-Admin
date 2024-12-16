@@ -51,8 +51,12 @@ export class AchievementCreationComponent {
   onSubmit(inputElement?: HTMLInputElement){
     this.service.postAchievement(this.form.get('name')?.value, this.selectedFile, this.form.get('category')?.value).subscribe((result) => {
       console.log(result.status);
+      if (result.status === 201) {
+        alert('Achievement created successfully.');
+        this.form.reset();
+        if(inputElement) this.deleteFile(inputElement);
+      }
+      else alert('An unexpected error occurred.');
     });
-    this.form.reset();
-    if(inputElement) this.deleteFile(inputElement);
   }
 }

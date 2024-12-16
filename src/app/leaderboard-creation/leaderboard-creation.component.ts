@@ -4,12 +4,13 @@ import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectChange, MatSelectModule} from '@angular/material/select';
-import {NgForOf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {MatInputModule} from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatButtonModule} from '@angular/material/button';
 import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
+import {forkJoin, of, switchMap} from 'rxjs';
 
 @Component({
   selector: 'app-leaderboard-creation',
@@ -22,7 +23,8 @@ import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core'
     MatInputModule,
     MatDatepickerModule,
     MatCheckboxModule,
-    MatButtonModule
+    MatButtonModule,
+    NgIf
   ],
   providers: [provideNativeDateAdapter(), [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}]],
   templateUrl: './leaderboard-creation.component.html',
@@ -31,7 +33,9 @@ import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core'
 })
 export class LeaderboardCreationComponent {
   games: any;
+  selectedGame: any;
   achievements: any;
+  filteredAchievements: any = [];
   constructor(private service: GamificationEngineService) {}
 
   form: FormGroup = new FormGroup({
@@ -48,25 +52,63 @@ export class LeaderboardCreationComponent {
   ngOnInit(){
     let selectedGame = localStorage.getItem('selectedGame');
     if(selectedGame) selectedGame = JSON.parse(selectedGame);
-    this.service.getGames().subscribe((result) => {
-      let games: any = result;
-      let finalGames = [];
-      for (let game in games){
-        if(games[game].state !== 'Finished'){
-          finalGames.push(games[game]);
-          if(JSON.stringify(selectedGame) === JSON.stringify(games[game])) this.form.get('game')?.setValue(games[game]);
+    forkJoin({
+      gamesResult: this.service.getGames(),
+      achievementsResult: this.service.getAchievements(),
+    }).pipe(
+      switchMap(({ gamesResult, achievementsResult }) => {
+        let games: any = gamesResult;
+        let finalGames = [];
+        for (let game in games){
+          if(games[game].state !== 'Finished'){
+            finalGames.push(games[game]);
+            if(JSON.stringify(selectedGame) === JSON.stringify(games[game])) this.form.get('game')?.setValue(games[game]);
+          }
         }
+        if(finalGames.length !== 0) this.games = finalGames;
+        this.achievements = achievementsResult;
+
+        this.selectedGame = this.form.get('game')?.value;
+        if(this.selectedGame)
+          return this.getGameRules(this.selectedGame);
+        else
+          return of(null);
+      })
+    ).subscribe((rules) => {
+      if(rules){
+        this.filterAchievements(rules.simpleRules, rules.dateRules);
+        console.log(this.filteredAchievements);
       }
-      if(finalGames.length !== 0) this.games = finalGames;
     });
-    this.service.getAchievements().subscribe((result) => {
-      this.achievements = result;
-    });
+
   }
 
   onGameSelect(event: MatSelectChange){
-    let game = event.value;
-    localStorage.setItem('selectedGame', JSON.stringify(game));
+    this.selectedGame = event.value;
+    localStorage.setItem('selectedGame', JSON.stringify(this.selectedGame));
+    this.getGameRules(this.selectedGame).subscribe(({simpleRules, dateRules}) => {
+      this.filterAchievements(simpleRules, dateRules);
+      console.log(this.filteredAchievements);
+    })
+  }
+
+  getGameRules(game: any){
+    return forkJoin({
+      simpleRules: this.service.getSimpleRules(game.subjectAcronym, game.course, game.period),
+      dateRules: this.service.getSimpleRules(game.subjectAcronym, game.course, game.period)
+    });
+  }
+
+  filterAchievements(simpleRules: any, dateRules: any){
+    this.filteredAchievements = [];
+    let simpleRuleAchievements = simpleRules.map((rule: { achievementId: any; }) => rule.achievementId);
+    let dateRuleAchievements = dateRules.map((rule: { achievementId: any; }) => rule.achievementId);
+    let achievementIds = [...new Set(simpleRuleAchievements.concat(dateRuleAchievements))];
+    for (let i in achievementIds) {
+      for (let j in this.achievements) {
+        if (achievementIds[i] === this.achievements[j].id) this.filteredAchievements.push(this.achievements[j]);
+      }
+    }
   }
 
   resetForm(){
@@ -98,8 +140,10 @@ export class LeaderboardCreationComponent {
     ).subscribe((result) =>{
       console.log(result.status);
       if (result.status === 201){
+        alert('Leaderboard created successfully.');
         this.resetForm();
       }
+      else alert('An unexpected error occurred.');
     });
   }
 }
