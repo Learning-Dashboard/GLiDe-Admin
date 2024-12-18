@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {MatStepper, MatStepperModule} from '@angular/material/stepper';
 import {GamificationEngineService} from '../services/gamification-engine.service';
-import {FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';
@@ -43,6 +43,7 @@ export class GameCreationComponent {
   selectedDateRule: any;
   importChangeDate = false;
   importChangeSimple = false;
+  selectedFile: any;
 
   constructor(private service: GamificationEngineService) {}
 
@@ -68,9 +69,6 @@ export class GameCreationComponent {
     a: new FormControl(1),
     b: new FormControl(1.4),
     c: new FormControl(2)
-  });
-  groupForm: FormGroup = new FormGroup({
-    groups: new FormArray([new FormControl()])
   });
 
   onSelectionChange(event: any){
@@ -178,16 +176,16 @@ export class GameCreationComponent {
     }
   }
 
-  get groups(){
-    return this.groupForm.get("groups") as FormArray;
+  onFileSelected(event: Event){
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0){
+      this.selectedFile = input.files![0];
+    }
   }
 
-  removeGameGroup(index: number){
-    this.groups.removeAt(index);
-  }
-
-  addGameGroup(){
-    this.groups.push(new FormControl('', Validators.required));
+  deleteFile(inputElement: HTMLInputElement){
+    this.selectedFile = null;
+    inputElement.value='';
   }
 
   ngOnInit(){
@@ -201,11 +199,11 @@ export class GameCreationComponent {
 
   isFormValid(): boolean {
     return this.subjectType === 'new'
-      ? this.subjectForm.valid && this.gameForm.valid && this.gameLevelPolicyForm.valid && this.groupForm.valid
-      : this.existingSubjectForm.valid && this.gameForm.valid && this.gameLevelPolicyForm.valid && this.groupForm.valid;
+      ? this.subjectForm.valid && this.gameForm.valid && this.gameLevelPolicyForm.valid
+      : this.existingSubjectForm.valid && this.gameForm.valid && this.gameLevelPolicyForm.valid;
   }
 
-  submit(){
+  submit(inputElement?: HTMLInputElement){
     let startDate = this.gameForm.get('start_date')?.value;
     let endDate = this.gameForm.get('end_date')?.value;
     startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset())
@@ -250,15 +248,12 @@ export class GameCreationComponent {
       )
     );
 
-    let groups: string[] = this.groupForm.get('groups')?.value;
-    let groupObservables = groups.map((group) =>
-      this.service.postGameGroup(
-        this.gameForm.get('subject_acronym')?.value,
-        this.gameForm.get('course')?.value,
-        this.gameForm.get('period')?.value,
-        group
-      )
-    );
+    let groupObservable = this.service.postGameGroup(
+      this.gameForm.get('subject_acronym')?.value,
+      this.gameForm.get('course')?.value,
+      this.gameForm.get('period')?.value,
+      10
+    )
 
     iif(
       () => this.subjectType === 'new',
@@ -295,13 +290,24 @@ export class GameCreationComponent {
       return forkJoin([
         ...simpleRuleObservables,
         ...dateRuleObservables,
-        ...groupObservables
+        groupObservable
       ]);
+    }),
+    switchMap(() => {
+      if(this.selectedFile)
+        return this.service.postImportData(this.gameForm.get('subject_acronym')?.value,
+          this.gameForm.get('course')?.value,
+          this.gameForm.get('period')?.value,
+          this.selectedFile
+        );
+      else
+        return of(null);
     })).subscribe({
       next: () => {
         alert('Game created successfully.');
         this.stepper.reset();
         this.gameLevelPolicyForm.reset({a: 1, b: 1.4, c: 2});
+        if (inputElement) this.deleteFile(inputElement);
       },
       error: () => alert('An unexpected error occurred.')
     });

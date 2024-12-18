@@ -67,3 +67,16 @@
   font-size: 18px;
   line-height: 2;
 }
+
+.file-button-container {
+  margin-bottom: 20px;
+  margin-left: 20px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.file-button {
+  width: 33%;
+  margin-left: 50px;
+}

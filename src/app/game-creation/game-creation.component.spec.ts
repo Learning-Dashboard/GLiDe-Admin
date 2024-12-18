@@ -66,7 +66,6 @@ describe('GameCreationComponent', () => {
     expect(component.existingSubjectForm).toBeDefined();
     expect(component.gameForm).toBeDefined();
     expect(component.gameLevelPolicyForm).toBeDefined();
-    expect(component.groupForm).toBeDefined();
   });
 
   it('should fetch games and subjects on initialization', () => {
@@ -97,7 +96,6 @@ describe('GameCreationComponent', () => {
       valid: true,
     });
     component.gameLevelPolicyForm.setValue({ a: 1, b: 1.4, c: 2 });
-    component.groupForm.setValue({ groups: [11] });
 
     expect(component.isFormValid()).toBe(true);
   });
@@ -114,17 +112,8 @@ describe('GameCreationComponent', () => {
       valid: true,
     });
     component.gameLevelPolicyForm.setValue({ a: 1, b: 1.4, c: 2 });
-    component.groupForm.setValue({ groups: [11] });
 
     expect(component.isFormValid()).toBe(true);
-  });
-
-  it('should add and remove game groups dynamically', () => {
-    component.addGameGroup();
-    expect(component.groups.length).toBe(2); // Initial form has 1, adding 1 makes 2.
-
-    component.removeGameGroup(0);
-    expect(component.groups.length).toBe(1);
   });
 
   it('should handle game submission with new subject', () => {
