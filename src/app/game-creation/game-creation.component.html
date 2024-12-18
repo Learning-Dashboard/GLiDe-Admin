@@ -69,14 +69,14 @@
                   </mat-select>
                 </mat-form-field>
                 <mat-form-field class="date-selector third-width">
-                  <mat-label>Date Range</mat-label>
+                  <mat-label>Game Period</mat-label>
                   <mat-date-range-input [rangePicker]="picker">
                     <input matStartDate readonly placeholder="Start date" formControlName="start_date" required>
                     <input matEndDate readonly placeholder="End date" formControlName="end_date" required (dateChange)="noInvalidDateRange()">
                   </mat-date-range-input>
                   <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
                   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                  <mat-date-range-picker #picker></mat-date-range-picker>
+                  <mat-date-range-picker touchUi="true" #picker></mat-date-range-picker>
                 </mat-form-field>
               </div>
             </form>

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {GamificationEngineService} from '../services/gamification-engine.service';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
+import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
@@ -26,6 +26,7 @@ export class RuleCreationComponent {
   games: any;
   achievements: any;
   canCallOpenAI: boolean = false;
+  fetchingOpenAI: boolean = false;
   protected conditions = [
     ['ValueGreaterThan', '>'],
     ['ValueLessThan', '<'],
@@ -88,6 +89,8 @@ export class RuleCreationComponent {
   }
 
   ngOnInit(){
+    let selectedGame = localStorage.getItem('selectedGame');
+    if(selectedGame) selectedGame = JSON.parse(selectedGame);
     this.service.getEvaluableActions().subscribe((result) => {
       this.evaluableActions = result;
     });
@@ -95,7 +98,10 @@ export class RuleCreationComponent {
       let games: any = result;
       let finalGames = [];
       for (let game in games){
-        if(games[game].state !== 'Finished') finalGames.push(games[game]);
+        if(games[game].state !== 'Finished'){
+          finalGames.push(games[game]);
+          if(JSON.stringify(selectedGame) === JSON.stringify(games[game])) this.form.get('game')?.setValue(games[game]);
+        }
       }
       if(finalGames.length !== 0) this.games = finalGames;
     });
@@ -106,15 +112,21 @@ export class RuleCreationComponent {
 
   getRecommendedNameMessage(){
     let evaluableAction = this.form.get('evaluableAction')?.value;
+    this.canCallOpenAI = false;
+    this.fetchingOpenAI = true;
     this.service.postOpenAI(evaluableAction.description,
       this.form.get('achievementAssignmentCondition')?.value,
       this.form.get('achievementAssignmentParameters')?.value).subscribe((result) => {
         let response: any = result;
-        console.log(response);
         this.form.get('name')?.setValue(response.name);
         this.form.get('achievementAssignmentMessage')?.setValue(response.achievementAssignmentMessage);
-        this.canCallOpenAI = false;
+        this.fetchingOpenAI = false;
     });
+  }
+
+  onGameSelect(event: MatSelectChange){
+    let game = event.value;
+    localStorage.setItem('selectedGame', JSON.stringify(game));
   }
 
   onSubmit(){
@@ -151,11 +163,13 @@ export class RuleCreationComponent {
         this.form.get('achievementAssignmentParameters')?.value,
         points,
         evaluableAction.assessmentLevel
-      ).subscribe((result) => {
-        console.log(result.status);
-        if(result.status === 201) {
+      ).subscribe({
+        next: (result) => {
+          console.log(result.status);
+          alert('Simple rule created successfully.');
           this.resetForm();
-        }
+        },
+        error: () => alert('An unexpected error occurred.')
       });
     }
     else if (this.form.get('ruleType')?.value === 'date'){
@@ -181,11 +195,13 @@ export class RuleCreationComponent {
         evaluableAction.assessmentLevel,
         startDate,
         endDate
-      ).subscribe((result) => {
-        console.log(result.status);
-        if(result.status === 201) {
+      ).subscribe({
+        next: (result) => {
+          console.log(result.status);
+          alert('Date rule created successfully.');
           this.resetForm();
-        }
+        },
+        error: () => alert('An unexpected error occurred.')
       });
     }
   }
