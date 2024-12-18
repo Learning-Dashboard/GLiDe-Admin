@@ -163,13 +163,13 @@ export class RuleCreationComponent {
         this.form.get('achievementAssignmentParameters')?.value,
         points,
         evaluableAction.assessmentLevel
-      ).subscribe((result) => {
-        console.log(result.status);
-        if(result.status === 201) {
+      ).subscribe({
+        next: (result) => {
+          console.log(result.status);
           alert('Simple rule created successfully.');
           this.resetForm();
-        }
-        else alert('An unexpected error occurred.');
+        },
+        error: () => alert('An unexpected error occurred.')
       });
     }
     else if (this.form.get('ruleType')?.value === 'date'){
@@ -195,13 +195,13 @@ export class RuleCreationComponent {
         evaluableAction.assessmentLevel,
         startDate,
         endDate
-      ).subscribe((result) => {
-        console.log(result.status);
-        if(result.status === 201) {
+      ).subscribe({
+        next: (result) => {
+          console.log(result.status);
           alert('Date rule created successfully.');
           this.resetForm();
-        }
-        else alert('An unexpected error occurred.');
+        },
+        error: () => alert('An unexpected error occurred.')
       });
     }
   }

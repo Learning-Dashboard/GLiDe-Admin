@@ -137,13 +137,13 @@ export class LeaderboardCreationComponent {
       game.course,
       game.period,
       this.form.get('achievement')?.value
-    ).subscribe((result) =>{
-      console.log(result.status);
-      if (result.status === 201){
+    ).subscribe({
+      next: (result) => {
+        console.log(result.status);
         alert('Leaderboard created successfully.');
         this.resetForm();
-      }
-      else alert('An unexpected error occurred.');
+      },
+      error: () => alert('An unexpected error occurred.')
     });
   }
 }

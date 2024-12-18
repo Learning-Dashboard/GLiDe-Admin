@@ -297,10 +297,13 @@ export class GameCreationComponent {
         ...dateRuleObservables,
         ...groupObservables
       ]);
-    })).subscribe(() => {
-      alert('Game created successfully.');
-      this.stepper.reset();
-      this.gameLevelPolicyForm.reset({ a: 1, b: 1.4, c: 2 });
+    })).subscribe({
+      next: () => {
+        alert('Game created successfully.');
+        this.stepper.reset();
+        this.gameLevelPolicyForm.reset({a: 1, b: 1.4, c: 2});
+      },
+      error: () => alert('An unexpected error occurred.')
     });
   }
 }
