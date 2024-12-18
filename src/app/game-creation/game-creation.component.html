@@ -229,29 +229,22 @@
             <button mat-button matStepperNext color="primary">Next</button>
           </div>
         </mat-step>
-        <mat-step [stepControl]="groupForm" label="Game Groups">
+        <mat-step label="Import Users and Teams">
           <mat-card class="form-container card">
-            <form [formGroup]="groupForm">
-              <mat-card-title class="card-title">Create Game Groups</mat-card-title>
-              <div class="condition-selector full-width">
-                <div formArrayName="groups" class="half-width">
-                  <div *ngFor="let group of groups.controls; let i = index">
-                    <mat-form-field class="group-input">
-                      <mat-label>Group Number</mat-label>
-                      <input matInput [formControlName]="i" type="number" required>
-                    </mat-form-field>
-                    <button *ngIf="i > 0" mat-mini-fab color="primary" aria-label="Delete group" type="button" (click)="removeGameGroup(i)" class="delete-button">
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </div>
-                </div>
-                <button mat-mini-fab color="primary" aria-label="Add parameter" type="button" (click)="addGameGroup()" class="add-button">
-                  <mat-icon>add</mat-icon>
+            <mat-card-title class="card-title">Import Users and Teams</mat-card-title>
+            <mat-card-content class="card-content">
+              <div class="full-width file-button-container">
+                <label class="label">CSV File (Optional)</label>
+                <button mat-raised-button color="primary" type="button" class="file-button" (click)="fileInput.click()">Choose File</button>
+                <input hidden (change)="onFileSelected($event)" #fileInput type="file" id="file" accept=".csv">
+                <span class="file-name">{{selectedFile?.name}}</span>
+                <button *ngIf="selectedFile" mat-mini-fab color="primary" aria-label="Delete file" type="button" (click)="deleteFile(fileInput)">
+                  <mat-icon>delete</mat-icon>
                 </button>
               </div>
-            </form>
+            </mat-card-content>
           </mat-card>
-          <button mat-raised-button color="primary" (click)="submit()" [disabled]="!isFormValid()">
+          <button mat-raised-button color="primary" class="card-title" (click)="submit(fileInput)" [disabled]="!isFormValid()">
             Submit
           </button>
           <div>

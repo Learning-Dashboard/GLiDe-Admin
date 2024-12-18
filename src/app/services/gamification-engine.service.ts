@@ -117,12 +117,12 @@ export class GamificationEngineService {
     return this.http.post(this.gamificationUrl + '/subjects', formData, {observe: 'response'})
   }
 
-  postGameGroup(gameSubjectAcronym: string, gameCourse: number, gamePeriod: string, group: string){
+  postGameGroup(gameSubjectAcronym: string, gameCourse: number, gamePeriod: string, group: number){
     const formData = new FormData();
     formData.append('gameSubjectAcronym', gameSubjectAcronym);
     formData.append('gameCourse', String(gameCourse));
     formData.append('gamePeriod', gamePeriod);
-    formData.append('group', group);
+    formData.append('group', String(group));
     return this.http.post(this.gamificationUrl + '/gameGroups', formData, {observe: 'response'});
   }
 
@@ -132,5 +132,15 @@ export class GamificationEngineService {
     formData.append('condition', condition);
     formData.append('conditionParameters', JSON.stringify(conditionParameters));
     return this.http.post(this.gamificationUrl + '/openAiApi', formData);
+  }
+
+  postImportData(gameSubjectAcronym: string, gameCourse: number, gamePeriod: string, importFile: File){
+    const formData = new FormData();
+    formData.append('subjectAcronym', gameSubjectAcronym);
+    formData.append('course', String(gameCourse));
+    formData.append('period', gamePeriod);
+    formData.append('groupNumber', '10');
+    formData.append('importedData', importFile);
+    return this.http.post(this.gamificationUrl + '/importData', formData);
   }
 }
