@@ -26,6 +26,7 @@ export class RuleCreationComponent {
   games: any;
   achievements: any;
   canCallOpenAI: boolean = false;
+  fetchingOpenAI: boolean = false;
   protected conditions = [
     ['ValueGreaterThan', '>'],
     ['ValueLessThan', '<'],
@@ -111,14 +112,15 @@ export class RuleCreationComponent {
 
   getRecommendedNameMessage(){
     let evaluableAction = this.form.get('evaluableAction')?.value;
+    this.canCallOpenAI = false;
+    this.fetchingOpenAI = true;
     this.service.postOpenAI(evaluableAction.description,
       this.form.get('achievementAssignmentCondition')?.value,
       this.form.get('achievementAssignmentParameters')?.value).subscribe((result) => {
         let response: any = result;
-        console.log(response);
         this.form.get('name')?.setValue(response.name);
         this.form.get('achievementAssignmentMessage')?.setValue(response.achievementAssignmentMessage);
-        this.canCallOpenAI = false;
+        this.fetchingOpenAI = false;
     });
   }
 

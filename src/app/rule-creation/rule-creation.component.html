@@ -100,6 +100,7 @@
         </mat-form-field>
       </div>
       <button mat-raised-button color="primary" type="button" class="group-selector" (click)="getRecommendedNameMessage()" [disabled]="!canCallOpenAI">Propose name and message for the rule</button>
+      <p *ngIf="fetchingOpenAI">Recommended name and message for the rule are being fetched</p>
       <mat-form-field class="full-width">
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" required>
