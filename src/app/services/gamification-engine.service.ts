@@ -151,4 +151,20 @@ export class GamificationEngineService {
   deleteLeaderboard(leaderboardId: number){
     return this.http.delete(this.gamificationUrl + '/leaderboards/' + leaderboardId, { responseType: 'text' });
   }
+
+  updateLeaderboard(leaderboardId: number, name: string, startDate: string, endDate: string, assessmentLevel: string, extent: string, anonymization: string, studentVisible: boolean, gameSubjectAcronym: string, gameCourse: number, gamePeriod: string, achievementId: number){
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('startDate', startDate);
+    formData.append('endDate', endDate);
+    formData.append('assessmentLevel', assessmentLevel);
+    formData.append('extent', extent);
+    formData.append('anonymization', anonymization);
+    formData.append('studentVisible', String(studentVisible));
+    formData.append('gameSubjectAcronym', gameSubjectAcronym);
+    formData.append('gameCourse', String(gameCourse));
+    formData.append('gamePeriod', gamePeriod);
+    formData.append('achievementId', String(achievementId));
+    return this.http.put(this.gamificationUrl + '/leaderboards/' + leaderboardId, formData);
+  }
 }

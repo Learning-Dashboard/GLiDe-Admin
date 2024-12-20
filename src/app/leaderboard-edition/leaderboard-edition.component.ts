@@ -48,6 +48,7 @@ export class LeaderboardEditionComponent {
 
   @Input() leaderboards: any;
   @Input() achievements: any;
+  @Input() game: any;
 
   selectedLeaderboard: any;
 
@@ -77,7 +78,33 @@ export class LeaderboardEditionComponent {
   }
 
   editLeaderboard(){
-
+    this.service.updateLeaderboard(
+      this.selectedLeaderboard.id,
+      this.leaderboardForm.get('name')?.value,
+      this.leaderboardForm.get('startDate')?.value,
+      this.leaderboardForm.get('endDate')?.value,
+      this.leaderboardForm.get('assessmentLevel')?.value,
+      'Subject',
+      this.leaderboardForm.get('anonymization')?.value,
+      this.leaderboardForm.get('studentVisible')?.value,
+      this.game.subjectAcronym,
+      this.game.course,
+      this.game.period,
+      this.leaderboardForm.get('achievement')?.value
+    ).subscribe({
+      next: (result) => {
+        alert('Leaderboard updated successfully.')
+        this.selectedLeaderboard = result;
+        this.leaderboardForm.get('leaderboard')?.setValue(result);
+        for (let leaderboard in this.leaderboards){
+          if (this.leaderboards[leaderboard].id === this.selectedLeaderboard.id){
+            this.leaderboards[leaderboard] = result;
+            break;
+          }
+        }
+      },
+      error: () => alert('An unexpected error occurred.')
+    });
   }
 
   deleteLeaderboard(){

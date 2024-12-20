@@ -29,6 +29,7 @@ import {catchError, of, switchMap} from 'rxjs';
   styleUrl: './game-edition.component.css'
 })
 export class GameEditionComponent {
+  game: any;
   games: any;
   simpleRules: any;
   dateRules: any;
@@ -58,14 +59,14 @@ export class GameEditionComponent {
   }
 
   onGameSelect(){
-    let game = this.gameForm.get('game')?.value;
-    this.service.getSimpleRules(game.subjectAcronym, game.course, game.period).subscribe((result) => {
+    this.game = this.gameForm.get('game')?.value;
+    this.service.getSimpleRules(this.game.subjectAcronym, this.game.course, this.game.period).subscribe((result) => {
       this.simpleRules = result;
     });
-    this.service.getDateRules(game.subjectAcronym, game.course, game.period).subscribe((result) => {
+    this.service.getDateRules(this.game.subjectAcronym, this.game.course, this.game.period).subscribe((result) => {
       this.dateRules = result;
     });
-    this.service.getLeaderboards(game.subjectAcronym, game.course, game.period).subscribe((result) => {
+    this.service.getLeaderboards(this.game.subjectAcronym, this.game.course, this.game.period).subscribe((result) => {
       this.leaderboards = result;
     });
   }
