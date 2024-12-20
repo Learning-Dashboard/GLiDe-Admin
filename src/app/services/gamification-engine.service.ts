@@ -167,4 +167,12 @@ export class GamificationEngineService {
     formData.append('achievementId', String(achievementId));
     return this.http.put(this.gamificationUrl + '/leaderboards/' + leaderboardId, formData);
   }
+
+  deleteSimpleRule(simpleRuleId: number){
+    return this.http.delete(this.gamificationUrl + '/rules/simples/' + simpleRuleId, { responseType: 'text' });
+  }
+
+  deleteDateRule(dateRuleId: number){
+    return this.http.delete(this.gamificationUrl + '/rules/dates' + dateRuleId, { responseType: 'text' });
+  }
 }

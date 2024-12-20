@@ -16,6 +16,7 @@ import {
 import {MatIcon} from '@angular/material/icon';
 import {MatInput} from '@angular/material/input';
 import {MatButton, MatMiniFabButton} from '@angular/material/button';
+import {GamificationEngineService} from '../services/gamification-engine.service';
 
 @Component({
   selector: 'app-rule-edition',
@@ -65,6 +66,8 @@ export class RuleEditionComponent {
     ['ValueOutsideOfRange', 'out of range'],
     ['ValueInsideOfRange', 'inside range']
   ];
+
+  constructor(private service: GamificationEngineService) {}
 
   ruleForm: FormGroup = new FormGroup({
     rule: new FormControl,
@@ -128,8 +131,34 @@ export class RuleEditionComponent {
 
   }
 
-  deleteRule(){
+  deleteResultRule(){
+    alert('Leaderboard deleted successfully.');
+    for (let rule in this.rules) {
+      if (this.rules[rule].id === this.selectedRule.id) {
+        this.rules.splice(rule, 1);
+        break;
+      }
+    }
+    this.selectedRule = null;
+    this.ruleForm.reset();
+  }
 
+  deleteRule(){
+    if (this.ruleType === 'date'){
+      this.service.deleteDateRule(this.selectedRule.id).subscribe({
+        next: () => {
+          this.deleteResultRule();
+        },
+        error: () => alert('An unexpected error occurred.')
+      })
+    } else {
+      this.service.deleteSimpleRule(this.selectedRule.id).subscribe({
+        next: () => {
+          this.deleteResultRule();
+        },
+        error: () => alert('An unexpected error occurred.')
+      })
+    }
   }
 
 }
