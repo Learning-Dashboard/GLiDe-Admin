@@ -147,4 +147,8 @@ export class GamificationEngineService {
   getLeaderboards(gameSubjectAcronym: string, gameCourse: number, gamePeriod: string){
     return this.http.get(this.gamificationUrl + '/leaderboards?gameSubjectAcronym=' + gameSubjectAcronym + '&gameCourse=' + gameCourse + '&gamePeriod=' + gamePeriod);
   }
+
+  deleteLeaderboard(leaderboardId: number){
+    return this.http.delete(this.gamificationUrl + '/leaderboards/' + leaderboardId, { responseType: 'text' });
+  }
 }

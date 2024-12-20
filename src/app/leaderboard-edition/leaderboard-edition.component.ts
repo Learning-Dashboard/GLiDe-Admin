@@ -81,6 +81,19 @@ export class LeaderboardEditionComponent {
   }
 
   deleteLeaderboard(){
-
+    this.service.deleteLeaderboard(this.selectedLeaderboard.id).subscribe({
+      next: () => {
+        alert('Leaderboard deleted successfully.');
+        for (let leaderboard in this.leaderboards){
+          if (this.leaderboards[leaderboard].id === this.selectedLeaderboard.id){
+            this.leaderboards.splice(leaderboard, 1);
+            break;
+          }
+        }
+        this.selectedLeaderboard = null;
+        this.leaderboardForm.reset();
+      },
+      error: () => alert('An unexpected error occurred.')
+    });
   }
 }
