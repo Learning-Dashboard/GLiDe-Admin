@@ -16,7 +16,6 @@ import {
 import {MatIcon} from '@angular/material/icon';
 import {MatInput} from '@angular/material/input';
 import {MatButton, MatMiniFabButton} from '@angular/material/button';
-import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 
 @Component({
   selector: 'app-rule-edition',

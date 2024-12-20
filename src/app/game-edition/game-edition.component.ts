@@ -19,6 +19,7 @@ import {MatListModule} from '@angular/material/list';
 import {MatIcon} from '@angular/material/icon';
 import {LeaderboardEditionComponent} from '../leaderboard-edition/leaderboard-edition.component';
 import {RuleEditionComponent} from '../rule-edition/rule-edition.component';
+import {catchError, of, switchMap} from 'rxjs';
 
 @Component({
   selector: 'app-game-edition',
@@ -31,8 +32,6 @@ export class GameEditionComponent {
   games: any;
   simpleRules: any;
   dateRules: any;
-  selectedSimpleRule: any;
-  selectedDateRule: any;
   leaderboards: any;
   achievements: any;
   selectedFile: any;
@@ -46,18 +45,16 @@ export class GameEditionComponent {
     end_date: new FormControl,
   });
 
-  simpleRuleForm: FormGroup = new FormGroup({
-    rule: new FormControl,
-  });
-
-  dateRuleForm: FormGroup = new FormGroup({
-    rule: new FormControl,
-  });
-
   ngOnInit(){
     this.service.getGames().subscribe((result) => {
       this.games = result;
     });
+    this.service.getAchievements().subscribe((result) => {
+      this.achievements = result;
+    });
+    this.service.getEvaluableActions().subscribe((result) => {
+      this.evaluableActions = result;
+    })
   }
 
   onGameSelect(){
@@ -71,36 +68,6 @@ export class GameEditionComponent {
     this.service.getLeaderboards(game.subjectAcronym, game.course, game.period).subscribe((result) => {
       this.leaderboards = result;
     });
-    this.service.getAchievements().subscribe((result) => {
-      this.achievements = result;
-    });
-    this.service.getEvaluableActions().subscribe((result) => {
-      this.evaluableActions = result;
-    })
-  }
-
-  selectSimpleRule(){
-
-  }
-
-  selectDateRule(){
-
-  }
-
-  deleteSimpleRule(){
-
-  }
-
-  deleteDateRule(){
-
-  }
-
-  editSimpleRule(){
-
-  }
-
-  editDateRule(){
-
   }
 
   onFileSelected(event: Event){
@@ -115,7 +82,26 @@ export class GameEditionComponent {
     inputElement.value='';
   }
 
-  submitCSV(){
-
+  submitCSV(inputElement: HTMLInputElement){
+    let game = this.gameForm.get('game')?.value
+    this.service.postGameGroup(
+      game.subjectAcronym, game.course, game.period, 10
+    ).pipe(
+      catchError(() => {
+        console.log("Game group exists")
+        return of(null);
+      }),
+      switchMap(() => {
+        return this.service.postImportData(
+          game.subjectAcronym, game.course, game.period, this.selectedFile
+        )
+      })
+    ).subscribe({
+      next: () => {
+        alert('User and team data entered successfully.');
+        this.deleteFile(inputElement);
+      },
+      error: () => alert('An unexpected error occurred.')
+    });
   }
 }
