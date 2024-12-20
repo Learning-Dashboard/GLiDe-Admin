@@ -1,0 +1,17 @@
+.card-title{
+  margin-bottom: 20px;
+}
+
+.date-container{
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+}

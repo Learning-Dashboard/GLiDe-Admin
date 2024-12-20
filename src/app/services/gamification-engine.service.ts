@@ -143,4 +143,8 @@ export class GamificationEngineService {
     formData.append('importedData', importFile);
     return this.http.post(this.gamificationUrl + '/importData', formData);
   }
+
+  getLeaderboards(gameSubjectAcronym: string, gameCourse: number, gamePeriod: string){
+    return this.http.get(this.gamificationUrl + '/leaderboards?gameSubjectAcronym=' + gameSubjectAcronym + '&gameCourse=' + gameCourse + '&gamePeriod=' + gamePeriod);
+  }
 }
