@@ -51,15 +51,12 @@
             </button>
           </div>
         </div>
-        <mat-form-field class="full-width">
-          <mat-label>Achievement</mat-label>
-          <mat-select formControlName="achievement" required>
-            <mat-option *ngFor="let achievement of achievements" [value]=achievement.id>
-              {{achievement.name}}
-              {{achievement.category}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div class="label card-title">
+          Achievement Name: {{(ruleForm.get('achievement')?.value).name}}
+        </div>
+        <div class="label card-title">
+          Achievement Category: {{(ruleForm.get('achievement')?.value).category}}
+        </div>
         <div class="horizontal-element-container">
           <mat-form-field class="number-container">
             <mat-label>Repetitions to assign</mat-label>

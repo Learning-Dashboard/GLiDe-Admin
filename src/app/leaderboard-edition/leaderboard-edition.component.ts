@@ -78,11 +78,18 @@ export class LeaderboardEditionComponent {
   }
 
   editLeaderboard(){
+    let startDate = this.leaderboardForm.get('startDate')?.value;
+    let endDate = this.leaderboardForm.get('endDate')?.value;
+    startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset())
+    startDate = startDate.toJSON().substring(0,10);
+    endDate.setMinutes(endDate.getMinutes() - endDate.getTimezoneOffset())
+    endDate = endDate.toJSON().substring(0,10);
+
     this.service.updateLeaderboard(
       this.selectedLeaderboard.id,
       this.leaderboardForm.get('name')?.value,
-      this.leaderboardForm.get('startDate')?.value,
-      this.leaderboardForm.get('endDate')?.value,
+      startDate,
+      endDate,
       this.leaderboardForm.get('assessmentLevel')?.value,
       'Subject',
       this.leaderboardForm.get('anonymization')?.value,
@@ -93,7 +100,7 @@ export class LeaderboardEditionComponent {
       this.leaderboardForm.get('achievement')?.value
     ).subscribe({
       next: (result) => {
-        alert('Leaderboard updated successfully.')
+        alert('Leaderboard updated successfully.');
         this.selectedLeaderboard = result;
         this.leaderboardForm.get('leaderboard')?.setValue(result);
         for (let leaderboard in this.leaderboards){

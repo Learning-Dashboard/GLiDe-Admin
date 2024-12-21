@@ -107,11 +107,12 @@ export class RuleEditionComponent {
 
   selectRule(){
     let rule = this.ruleForm.get('rule')?.value;
+    let achievement = this.selectAchievement(rule.achievementId);
     this.selectedRule = rule;
     this.ruleForm.get('name')?.setValue(rule.name);
     this.ruleForm.get('startDate')?.setValue(rule.startDate);
     this.ruleForm.get('endDate')?.setValue(rule.endDate);
-    this.ruleForm.get('achievement')?.setValue(rule.achievementId);
+    this.ruleForm.get('achievement')?.setValue(achievement);
     this.ruleForm.get('evaluableAction')?.setValue(rule.evaluableActionId);
     this.ruleForm.get('repetitions')?.setValue(rule.repetitions);
     this.ruleForm.get('achievementAssignmentMessage')?.setValue(rule.achievementAssignmentMessage);
@@ -127,8 +128,75 @@ export class RuleEditionComponent {
       evaluableAction.id === this.ruleForm.get('evaluableAction')?.value);
   }
 
-  editRule(){
+  selectAchievement(achievementId: any){
+    return this.achievements.find((achievement: any) =>
+      achievement.id === achievementId);
+  }
 
+  editRule(){
+    let rule = this.ruleForm.get('rule')?.value;
+    let repetitions = Math.round(this.ruleForm.get('repetitions')?.value);
+    let points = Math.round(this.ruleForm.get('achievementAssignmentUnits')?.value);
+    let evaluableAction = this.evaluableActions.find((evaluableAction: any) => evaluableAction.id === this.ruleForm.get('evaluableAction')?.value);
+    let observable;
+
+    if (this.ruleType === 'simple')
+      observable = this.service.updateSimpleRule(
+        rule.id,
+        this.ruleForm.get('name')?.value,
+        repetitions,
+        rule.gameSubjectAcronym,
+        rule.gameCourse,
+        rule.gamePeriod,
+        this.ruleForm.get('evaluableAction')?.value,
+        this.ruleForm.get('achievementAssignmentMessage')?.value,
+        this.ruleForm.get('onlyFirstTime')?.value,
+        this.ruleForm.get('achievementAssignmentCondition')?.value,
+        this.ruleForm.get('achievementAssignmentParameters')?.value,
+        points,
+        evaluableAction.assessmentLevel
+      );
+    else {
+      let startDate = this.ruleForm.get('startDate')?.value;
+      let endDate = this.ruleForm.get('endDate')?.value;
+      startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset())
+      startDate = startDate.toJSON().substring(0, 10);
+      endDate.setMinutes(endDate.getMinutes() - endDate.getTimezoneOffset())
+      endDate = endDate.toJSON().substring(0, 10);
+
+      observable = this.service.updateDateRule(
+        rule.id,
+        this.ruleForm.get('name')?.value,
+        repetitions,
+        rule.gameSubjectAcronym,
+        rule.gameCourse,
+        rule.gamePeriod,
+        this.ruleForm.get('evaluableAction')?.value,
+        this.ruleForm.get('achievementAssignmentMessage')?.value,
+        this.ruleForm.get('onlyFirstTime')?.value,
+        this.ruleForm.get('achievementAssignmentCondition')?.value,
+        this.ruleForm.get('achievementAssignmentParameters')?.value,
+        points,
+        evaluableAction.assessmentLevel,
+        startDate,
+        endDate
+      );
+    }
+
+    observable.subscribe({
+      next: (result) => {
+        alert('Rule updated successfully.');
+        this.selectedRule = result;
+        this.ruleForm.get('rule')?.setValue(result);
+        for (let rule in this.rules){
+          if (this.rules[rule].id === this.selectedRule.id) {
+            this.rules[rule] = result;
+            break;
+          }
+        }
+      },
+      error: () => alert('An unexpected error occurred.')
+    });
   }
 
   deleteResultRule(){
