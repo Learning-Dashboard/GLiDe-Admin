@@ -90,8 +90,10 @@
           <mat-label>Achievement Assignment Message</mat-label>
           <textarea matInput formControlName="achievementAssignmentMessage" required></textarea>
         </mat-form-field>
-        <button mat-raised-button color="primary" type="button" (click)="editRule()">Submit Changes</button>
-        <button mat-raised-button color="primary" type="button" (click)="deleteRule()">Delete</button>
+        <div class="button-div">
+          <button mat-raised-button color="primary" type="button" (click)="editRule()">Submit Changes</button>
+          <button mat-raised-button color="primary" type="button" class="delete-button" (click)="deleteRule()">Delete</button>
+        </div>
       </mat-card>
     </mat-card-content>
   </form>

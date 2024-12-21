@@ -52,8 +52,10 @@
         <mat-checkbox formControlName="studentVisible" color="primary">
           <span class="label">Visible to students</span>
         </mat-checkbox>
-        <button mat-raised-button color="primary" type="button" (click)="editLeaderboard()">Submit Changes</button>
-        <button mat-raised-button color="primary" type="button" (click)="deleteLeaderboard()">Delete</button>
+        <div class="button-div">
+          <button mat-raised-button color="primary" type="button" (click)="editLeaderboard()">Submit Changes</button>
+          <button mat-raised-button color="primary" type="button" class="delete-button" (click)="deleteLeaderboard()">Delete</button>
+        </div>
       </mat-card>
     </mat-card-content>
   </form>

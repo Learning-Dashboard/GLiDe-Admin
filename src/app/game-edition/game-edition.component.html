@@ -25,17 +25,22 @@
         <mat-step label="Date Range">
           <mat-card class="form-container card">
             <mat-card-title class="card-title">Edit Game Period</mat-card-title>
-            <form [formGroup]="gameForm">
+            <form [formGroup]="dateForm">
               <mat-form-field class="date-selector half-width">
                 <mat-label>Game Period</mat-label>
                 <mat-date-range-input [rangePicker]="picker">
-                  <input matStartDate readonly placeholder="Start date" formControlName="start_date">
-                  <input matEndDate readonly placeholder="End date" formControlName="end_date">
+                  <input matStartDate readonly placeholder="Start date" formControlName="startDate" required>
+                  <input matEndDate readonly placeholder="End date" formControlName="endDate" required>
                 </mat-date-range-input>
                 <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-date-range-picker touchUi="true" #picker></mat-date-range-picker>
               </mat-form-field>
+              <div>
+                <button mat-raised-button color="primary" class="card-title" (click)="updateGame()" [disabled]="dateForm.invalid">
+                  Submit
+                </button>
+              </div>
             </form>
           </mat-card>
           <div>

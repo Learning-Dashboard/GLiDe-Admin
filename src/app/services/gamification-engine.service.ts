@@ -174,4 +174,11 @@ export class GamificationEngineService {
     formData.append('endDate', endDate);
     return this.http.put(this.gamificationUrl + '/rules/dates/' + dateRuleId, formData);
   }
+
+  updateGame(gameSubjectAcronym: string, gameCourse: number, gamePeriod: string, startDate: string, endDate: string){
+    const formData = new FormData();
+    formData.append('startDate', startDate);
+    formData.append('endDate', endDate);
+    return this.http.put(this.gamificationUrl + '/games?gameSubjectAcronym=' + gameSubjectAcronym + '&gameCourse=' + gameCourse + '&gamePeriod=' + gamePeriod, formData);
+  }
 }

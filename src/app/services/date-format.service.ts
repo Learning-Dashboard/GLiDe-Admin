@@ -7,8 +7,11 @@ export class DateFormatService {
 
   constructor() { }
 
-  formatDate(date: Date): String {
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
-    return date.toJSON().substring(0,10);
+  formatDate(date: any): String {
+    if(date instanceof Date) {
+      date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+      return date.toJSON().substring(0, 10);
+    }
+    else return date;
   }
 }

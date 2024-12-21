@@ -20,6 +20,7 @@ import {MatIcon} from '@angular/material/icon';
 import {LeaderboardEditionComponent} from '../leaderboard-edition/leaderboard-edition.component';
 import {RuleEditionComponent} from '../rule-edition/rule-edition.component';
 import {catchError, of, switchMap} from 'rxjs';
+import {DateFormatService} from '../services/date-format.service';
 
 @Component({
   selector: 'app-game-edition',
@@ -38,13 +39,16 @@ export class GameEditionComponent {
   selectedFile: any;
   evaluableActions: any;
 
-  constructor(private service: GamificationEngineService) {}
+  constructor(private service: GamificationEngineService, private dateService: DateFormatService) {}
 
   gameForm: FormGroup = new FormGroup({
     game: new FormControl,
-    start_date: new FormControl,
-    end_date: new FormControl,
   });
+
+  dateForm: FormGroup = new FormGroup({
+    startDate: new FormControl,
+    endDate: new FormControl,
+  })
 
   ngOnInit(){
     this.service.getGames().subscribe((result) => {
@@ -60,6 +64,8 @@ export class GameEditionComponent {
 
   onGameSelect(){
     this.game = this.gameForm.get('game')?.value;
+    this.dateForm.get('startDate')?.setValue(this.game.startDate);
+    this.dateForm.get('endDate')?.setValue(this.game.endDate);
     this.service.getSimpleRules(this.game.subjectAcronym, this.game.course, this.game.period).subscribe((result) => {
       this.simpleRules = result;
     });
@@ -69,6 +75,29 @@ export class GameEditionComponent {
     this.service.getLeaderboards(this.game.subjectAcronym, this.game.course, this.game.period).subscribe((result) => {
       this.leaderboards = result;
     });
+  }
+
+  updateGame(){
+    let startDate = this.dateForm.get('startDate')?.value;
+    let endDate = this.dateForm.get('endDate')?.value;
+
+    startDate = this.dateService.formatDate(startDate);
+    endDate = this.dateService.formatDate(endDate);
+
+    this.service.updateGame(this.game.subjectAcronym, this.game.course, this.game.period, startDate, endDate).subscribe({
+      next: (result) => {
+        alert('Game updated successfully.');
+        this.game = result;
+        this.gameForm.get('game')?.setValue(result);
+        for (let game in this.games){
+          if (this.games[game].subjectAcronym === this.game.subjectAcronym && this.games[game].course === this.game.course && this.games[game].period === this.game.period) {
+            this.games[game] = this.game;
+            break;
+          }
+        }
+      },
+      error: () => alert('An unexpected error occurred.')
+    })
   }
 
   onFileSelected(event: Event){
