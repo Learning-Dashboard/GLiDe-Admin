@@ -17,6 +17,7 @@ import {MatIcon} from '@angular/material/icon';
 import {MatInput} from '@angular/material/input';
 import {MatButton, MatMiniFabButton} from '@angular/material/button';
 import {GamificationEngineService} from '../services/gamification-engine.service';
+import {DateFormatService} from '../services/date-format.service';
 
 @Component({
   selector: 'app-rule-edition',
@@ -67,7 +68,7 @@ export class RuleEditionComponent {
     ['ValueInsideOfRange', 'inside range']
   ];
 
-  constructor(private service: GamificationEngineService) {}
+  constructor(private service: GamificationEngineService, private dateService: DateFormatService) {}
 
   ruleForm: FormGroup = new FormGroup({
     rule: new FormControl,
@@ -159,10 +160,9 @@ export class RuleEditionComponent {
     else {
       let startDate = this.ruleForm.get('startDate')?.value;
       let endDate = this.ruleForm.get('endDate')?.value;
-      startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset())
-      startDate = startDate.toJSON().substring(0, 10);
-      endDate.setMinutes(endDate.getMinutes() - endDate.getTimezoneOffset())
-      endDate = endDate.toJSON().substring(0, 10);
+
+      startDate = this.dateService.formatDate(startDate);
+      endDate = this.dateService.formatDate(endDate);
 
       observable = this.service.updateDateRule(
         rule.id,

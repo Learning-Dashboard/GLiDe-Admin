@@ -20,6 +20,7 @@ import {MatListModule} from '@angular/material/list';
 import {MatIcon} from '@angular/material/icon';
 import {catchError, forkJoin, iif, of, switchMap, throwError} from 'rxjs';
 import {Chart, registerables} from 'chart.js';
+import {DateFormatService} from '../services/date-format.service';
 
 
 @Component({
@@ -47,7 +48,7 @@ export class GameCreationComponent {
   selectedFile: any;
   chart: any;
 
-  constructor(private service: GamificationEngineService) {
+  constructor(private service: GamificationEngineService, private dateService: DateFormatService) {
     Chart.register(...registerables);
   }
 
@@ -268,10 +269,9 @@ export class GameCreationComponent {
   submit(inputElement?: HTMLInputElement){
     let startDate = this.gameForm.get('start_date')?.value;
     let endDate = this.gameForm.get('end_date')?.value;
-    startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset())
-    startDate = startDate.toJSON().substring(0,10);
-    endDate.setMinutes(endDate.getMinutes() - endDate.getTimezoneOffset())
-    endDate = endDate.toJSON().substring(0,10);
+
+    startDate = this.dateService.formatDate(startDate);
+    endDate = this.dateService.formatDate(endDate);
 
     let simpleRuleObservables = this.importedSimpleRules.map((simpleRule) =>
       this.service.postSimpleRule(

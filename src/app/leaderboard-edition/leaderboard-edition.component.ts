@@ -16,6 +16,7 @@ import {MatSelect} from "@angular/material/select";
 import {NgForOf, NgIf} from "@angular/common";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {GamificationEngineService} from '../services/gamification-engine.service';
+import {DateFormatService} from '../services/date-format.service';
 
 @Component({
   selector: 'app-leaderboard-edition',
@@ -52,7 +53,7 @@ export class LeaderboardEditionComponent {
 
   selectedLeaderboard: any;
 
-  constructor(private service: GamificationEngineService) {}
+  constructor(private service: GamificationEngineService, private dateService: DateFormatService) {}
 
   leaderboardForm: FormGroup = new FormGroup({
     leaderboard: new FormControl,
@@ -80,10 +81,9 @@ export class LeaderboardEditionComponent {
   editLeaderboard(){
     let startDate = this.leaderboardForm.get('startDate')?.value;
     let endDate = this.leaderboardForm.get('endDate')?.value;
-    startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset())
-    startDate = startDate.toJSON().substring(0,10);
-    endDate.setMinutes(endDate.getMinutes() - endDate.getTimezoneOffset())
-    endDate = endDate.toJSON().substring(0,10);
+
+    startDate = this.dateService.formatDate(startDate);
+    endDate = this.dateService.formatDate(endDate);
 
     this.service.updateLeaderboard(
       this.selectedLeaderboard.id,
