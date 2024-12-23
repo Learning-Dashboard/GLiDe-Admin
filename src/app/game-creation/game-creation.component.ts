@@ -19,6 +19,8 @@ import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core'
 import {MatListModule} from '@angular/material/list';
 import {MatIcon} from '@angular/material/icon';
 import {catchError, forkJoin, iif, of, switchMap, throwError} from 'rxjs';
+import {Chart, registerables} from 'chart.js';
+import {DateFormatService} from '../services/date-format.service';
 
 
 @Component({
@@ -44,8 +46,11 @@ export class GameCreationComponent {
   importChangeDate = false;
   importChangeSimple = false;
   selectedFile: any;
+  chart: any;
 
-  constructor(private service: GamificationEngineService) {}
+  constructor(private service: GamificationEngineService, private dateService: DateFormatService) {
+    Chart.register(...registerables);
+  }
 
   subjectForm: FormGroup = new FormGroup({
     acronym: new FormControl,
@@ -197,6 +202,64 @@ export class GameCreationComponent {
     })
   }
 
+  ngAfterViewInit(): void {
+    this.initializeChart();
+    this.gameLevelPolicyForm.valueChanges.subscribe(() => {
+      this.updateChart();
+    });
+  }
+
+  initializeChart(){
+    const ctx = document.getElementById('levelPoints') as HTMLCanvasElement;
+    this.chart = new Chart(ctx,{
+      type: 'line',
+      data: {
+        labels: Array.from({ length: 10 }, (_, i) => i),
+        datasets: [{
+          label: 'Points required to level up',
+          data: this.calculatePoints(),
+          borderColor: 'blue',
+          backgroundColor: 'rgba(0, 0, 255, 0.1)',
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true
+          }
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Level'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Points'
+            }
+          }
+        }
+      }
+    });
+  }
+
+  calculatePoints(){
+    let a = this.gameLevelPolicyForm.get('a')?.value;
+    let b = this.gameLevelPolicyForm.get('b')?.value;
+    let c = this.gameLevelPolicyForm.get('c')?.value;
+    return Array.from({length: 10}, (_, level) => a * Math.pow(b, level*c));
+  }
+
+  updateChart(): void {
+    this.chart.data.datasets[0].data = this.calculatePoints();
+    this.chart.update();
+  }
+
   isFormValid(): boolean {
     return this.subjectType === 'new'
       ? this.subjectForm.valid && this.gameForm.valid && this.gameLevelPolicyForm.valid
@@ -206,10 +269,9 @@ export class GameCreationComponent {
   submit(inputElement?: HTMLInputElement){
     let startDate = this.gameForm.get('start_date')?.value;
     let endDate = this.gameForm.get('end_date')?.value;
-    startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset())
-    startDate = startDate.toJSON().substring(0,10);
-    endDate.setMinutes(endDate.getMinutes() - endDate.getTimezoneOffset())
-    endDate = endDate.toJSON().substring(0,10);
+
+    startDate = this.dateService.formatDate(startDate);
+    endDate = this.dateService.formatDate(endDate);
 
     let simpleRuleObservables = this.importedSimpleRules.map((simpleRule) =>
       this.service.postSimpleRule(

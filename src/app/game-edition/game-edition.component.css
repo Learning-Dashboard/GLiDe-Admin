@@ -80,10 +80,3 @@
   width: 33%;
   margin-left: 50px;
 }
-
-.graph-container{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 500px;
-}

@@ -11,6 +11,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatButtonModule} from '@angular/material/button';
 import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
 import {forkJoin, of, switchMap} from 'rxjs';
+import {DateFormatService} from '../services/date-format.service';
 
 @Component({
   selector: 'app-leaderboard-creation',
@@ -36,7 +37,7 @@ export class LeaderboardCreationComponent {
   selectedGame: any;
   achievements: any;
   filteredAchievements: any = [];
-  constructor(private service: GamificationEngineService) {}
+  constructor(private service: GamificationEngineService, private dateService: DateFormatService) {}
 
   form: FormGroup = new FormGroup({
     game: new FormControl,
@@ -120,10 +121,9 @@ export class LeaderboardCreationComponent {
     let game = this.form.get('game')?.value;
     let startDate = this.form.get('startDate')?.value;
     let endDate = this.form.get('endDate')?.value;
-    startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset())
-    startDate = startDate.toJSON().substring(0,10);
-    endDate.setMinutes(endDate.getMinutes() - endDate.getTimezoneOffset())
-    endDate = endDate.toJSON().substring(0,10);
+
+    startDate = this.dateService.formatDate(startDate);
+    endDate = this.dateService.formatDate(endDate);
 
     this.service.postLeaderboard(
       this.form.get('name')?.value,

@@ -12,6 +12,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatIcon} from '@angular/material/icon';
+import {DateFormatService} from '../services/date-format.service';
 
 @Component({
   selector: 'app-rule-creation',
@@ -37,7 +38,7 @@ export class RuleCreationComponent {
     ['ValueInsideOfRange', 'inside range']
   ];
 
-  constructor(private service: GamificationEngineService) {}
+  constructor(private service: GamificationEngineService, private dateService: DateFormatService) {}
 
   form: FormGroup = new FormGroup({
     game: new FormControl,
@@ -175,10 +176,10 @@ export class RuleCreationComponent {
     else if (this.form.get('ruleType')?.value === 'date'){
       let startDate = this.form.get('startDate')?.value;
       let endDate = this.form.get('endDate')?.value;
-      startDate.setMinutes(startDate.getMinutes() - startDate.getTimezoneOffset())
-      startDate = startDate.toJSON().substring(0,10);
-      endDate.setMinutes(endDate.getMinutes() - endDate.getTimezoneOffset())
-      endDate = endDate.toJSON().substring(0,10);
+
+      startDate = this.dateService.formatDate(startDate);
+      endDate = this.dateService.formatDate(endDate);
+
       this.service.postDateRule(
         this.form.get('name')?.value,
         repetitions,
