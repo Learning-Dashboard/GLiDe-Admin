@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GameTabsComponent } from './game-tabs.component';
+import {provideHttpClient} from '@angular/common/http';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 
 describe('GameTabsComponent', () => {
   let component: GameTabsComponent;
@@ -8,7 +10,8 @@ describe('GameTabsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GameTabsComponent]
+      imports: [GameTabsComponent],
+      providers: [provideAnimationsAsync()]
     })
     .compileComponents();
 
