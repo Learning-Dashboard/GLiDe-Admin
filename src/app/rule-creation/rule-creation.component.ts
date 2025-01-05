@@ -117,11 +117,17 @@ export class RuleCreationComponent {
     this.fetchingOpenAI = true;
     this.service.postOpenAI(evaluableAction.description,
       this.form.get('achievementAssignmentCondition')?.value,
-      this.form.get('achievementAssignmentParameters')?.value).subscribe((result) => {
+      this.form.get('achievementAssignmentParameters')?.value).subscribe({
+      next: (result) => {
         let response: any = result;
         this.form.get('name')?.setValue(response.name);
         this.form.get('achievementAssignmentMessage')?.setValue(response.achievementAssignmentMessage);
         this.fetchingOpenAI = false;
+      },
+      error: () => {
+        alert('An error occurred while fetching recommended name and message.');
+        this.fetchingOpenAI = false;
+      }
     });
   }
 
