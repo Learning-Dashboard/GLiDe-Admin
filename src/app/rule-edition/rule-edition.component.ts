@@ -13,9 +13,8 @@ import {
   MatEndDate,
   MatStartDate
 } from '@angular/material/datepicker';
-import {MatIcon} from '@angular/material/icon';
 import {MatInput} from '@angular/material/input';
-import {MatButton, MatMiniFabButton} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {GamificationEngineService} from '../services/gamification-engine.service';
 import {DateFormatService} from '../services/date-format.service';
 
@@ -38,9 +37,7 @@ import {DateFormatService} from '../services/date-format.service';
     MatDatepickerToggle,
     MatEndDate,
     MatHint,
-    MatIcon,
     MatInput,
-    MatMiniFabButton,
     MatSelectTrigger,
     MatStartDate,
     MatSuffix,
@@ -88,7 +85,7 @@ export class RuleEditionComponent {
   get achievementAssignmentParameters(){
     return this.ruleForm.get("achievementAssignmentParameters") as FormArray;
   }
-
+/*
   addAchievementAssignmentParameter(){
     this.achievementAssignmentParameters.push(new FormControl('', Validators.required));
   }
@@ -97,12 +94,16 @@ export class RuleEditionComponent {
     this.achievementAssignmentParameters.removeAt(i);
   }
 
+ */
+
   protected conditionChange(){
     if (this.ruleForm.get('achievementAssignmentCondition')?.value !== 'ValueInsideOfRange' && this.ruleForm.get('achievementAssignmentCondition')?.value !== 'ValueOutsideOfRange') {
-      const parameters = this.ruleForm.controls['achievementAssignmentParameters'] as FormArray;
-      const firstValue = parameters.at(0);
-      parameters.clear();
-      parameters.push(firstValue);
+      const firstValue = this.achievementAssignmentParameters.at(0);
+      this.achievementAssignmentParameters.clear();
+      this.achievementAssignmentParameters.push(firstValue);
+    }
+    else if (this.achievementAssignmentParameters.length < 2) {
+      this.achievementAssignmentParameters.push(new FormControl('', Validators.required));
     }
   }
 

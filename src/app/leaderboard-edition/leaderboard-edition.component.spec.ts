@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LeaderboardEditionComponent } from './leaderboard-edition.component';
+import {provideHttpClient} from '@angular/common/http';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 
 describe('LeaderboardEditionComponent', () => {
   let component: LeaderboardEditionComponent;
@@ -8,7 +10,8 @@ describe('LeaderboardEditionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LeaderboardEditionComponent]
+      imports: [LeaderboardEditionComponent],
+      providers: [provideHttpClient(), provideAnimationsAsync()]
     })
     .compileComponents();
 

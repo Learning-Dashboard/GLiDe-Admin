@@ -74,16 +74,6 @@ describe('RuleCreationComponent', () => {
     expect(component.form.get('onlyFirstTime')?.value).toBeFalse();
   });
 
-  it('should add and remove achievement assignment parameters', () => {
-    const initialLength = component.achievementAssignmentParameters.length;
-
-    component.addAchievementAssignmentParameter();
-    expect(component.achievementAssignmentParameters.length).toBe(initialLength + 1);
-
-    component.removeAchievementAssignmentParameter(1);
-    expect(component.achievementAssignmentParameters.length).toBe(initialLength);
-  });
-
   it('should reset the form after submission', () => {
     spyOn(component.form, 'reset').and.callThrough();
     component.form.get('ruleType')?.setValue('date');

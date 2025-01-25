@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GameEditionComponent } from './game-edition.component';
+import {provideHttpClient} from '@angular/common/http';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 
 describe('GameEditionComponent', () => {
   let component: GameEditionComponent;
@@ -8,7 +10,8 @@ describe('GameEditionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GameEditionComponent]
+      imports: [GameEditionComponent],
+      providers: [provideHttpClient(), provideAnimationsAsync()]
     })
     .compileComponents();
 

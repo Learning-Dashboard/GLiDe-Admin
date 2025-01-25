@@ -44,14 +44,8 @@
                 <mat-label>Parameter</mat-label>
                 <input matInput [formControlName]="i" type="number" (input)="openAiParameterChange()" required>
               </mat-form-field>
-              <button *ngIf="i > 0" mat-mini-fab color="primary" aria-label="Delete parameter" type="button" (click)="removeAchievementAssignmentParameter(i)" class="delete-button">
-                <mat-icon>delete</mat-icon>
-              </button>
             </div>
           </div>
-          <button *ngIf="form.get('achievementAssignmentCondition')?.value === 'ValueInsideOfRange' || form.get('achievementAssignmentCondition')?.value === 'ValueOutsideOfRange'" mat-mini-fab color="primary" aria-label="Add parameter" type="button" (click)="addAchievementAssignmentParameter()" class="add-button">
-            <mat-icon>add</mat-icon>
-          </button>
         </div>
       </div>
       <mat-form-field class="full-width">

@@ -11,12 +11,11 @@ import {NgForOf, NgIf} from '@angular/common';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatIcon} from '@angular/material/icon';
 import {DateFormatService} from '../services/date-format.service';
 
 @Component({
   selector: 'app-rule-creation',
-  imports: [MatFormFieldModule, MatInputModule, MatSelectModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatRadioModule, NgForOf, NgIf, MatDatepickerModule, MatCheckboxModule, MatIcon],
+  imports: [MatFormFieldModule, MatInputModule, MatSelectModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatRadioModule, NgForOf, NgIf, MatDatepickerModule, MatCheckboxModule],
   providers: [provideNativeDateAdapter(), [{provide: MAT_DATE_LOCALE, useValue: 'en-GB'}]],
   templateUrl: './rule-creation.component.html',
   standalone: true,
@@ -59,7 +58,7 @@ export class RuleCreationComponent {
   get achievementAssignmentParameters(){
     return this.form.get("achievementAssignmentParameters") as FormArray;
   }
-
+/*
   addAchievementAssignmentParameter(){
     this.achievementAssignmentParameters.push(new FormControl('', Validators.required));
   }
@@ -68,6 +67,8 @@ export class RuleCreationComponent {
     this.achievementAssignmentParameters.removeAt(i);
   }
 
+ */
+
   openAiParameterChange(){
     if (this.achievementAssignmentParameters.valid) this.canCallOpenAI = true;
   }
@@ -75,17 +76,20 @@ export class RuleCreationComponent {
   protected conditionChange(){
     this.openAiParameterChange();
     if (this.form.get('achievementAssignmentCondition')?.value !== 'ValueInsideOfRange' && this.form.get('achievementAssignmentCondition')?.value !== 'ValueOutsideOfRange') {
-      const parameters = this.form.controls['achievementAssignmentParameters'] as FormArray;
-      const firstValue = parameters.at(0);
-      parameters.clear();
-      parameters.push(firstValue);
+      const firstValue = this.achievementAssignmentParameters.at(0);
+      this.achievementAssignmentParameters.clear();
+      this.achievementAssignmentParameters.push(firstValue);
+    }
+    else if (this.achievementAssignmentParameters.length < 2) {
+      this.achievementAssignmentParameters.push(new FormControl('', Validators.required));
     }
   }
 
   resetForm(){
     this.form.reset();
     this.form.get('ruleType')?.setValue('simple');
-    this.conditionChange();
+    //this.conditionChange();
+    this.canCallOpenAI = true;
     this.form.get('onlyFirstTime')?.setValue(false);
   }
 
@@ -117,11 +121,17 @@ export class RuleCreationComponent {
     this.fetchingOpenAI = true;
     this.service.postOpenAI(evaluableAction.description,
       this.form.get('achievementAssignmentCondition')?.value,
-      this.form.get('achievementAssignmentParameters')?.value).subscribe((result) => {
+      this.form.get('achievementAssignmentParameters')?.value).subscribe({
+      next: (result) => {
         let response: any = result;
         this.form.get('name')?.setValue(response.name);
         this.form.get('achievementAssignmentMessage')?.setValue(response.achievementAssignmentMessage);
         this.fetchingOpenAI = false;
+      },
+      error: () => {
+        alert('An error occurred while fetching recommended name and message.');
+        this.fetchingOpenAI = false;
+      }
     });
   }
 
